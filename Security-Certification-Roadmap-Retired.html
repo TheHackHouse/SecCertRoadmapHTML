@@ -1,0 +1,3481 @@
+<style>
+    /* Set fill and line colors for certification boxes. dk suffix means "dark" for the line color. */
+    :root {
+            --green: #70AD47;
+            --greendk: #548235;
+            --teal: #008080;
+            --tealdk: #003F3E;
+            --orange: #fa8e36;
+            --orangedk: #c06216;
+            --orangelt: #fdeada;
+            --yellow: #e4ac03;
+            --yellowdk: #7F6000;
+            --black: #2a2a2a;
+            --blackdk: #000000; 
+            --blacklt: #d9d9d9;
+            --purple: #683e9b;
+            --purpledk: #352647;
+            --purplelt: #eddbff;
+            --skyblue: #6bb3f6;
+            --skybluedk: #2665a0;
+            --blue: #2e5688;
+            --bluedk: #1f3147;
+            --bluelt: #dce6f2;
+            --red: #c0514d;
+            --reddk: #8c3736;
+            --redlt: #f2dcdb;
+            --magenta: #830083;
+            --magentadk: #490e49;
+    }
+
+    /* I think this is vestigial April 2022
+    .cert-body {
+           margin-left: 6vmax;
+            margin-right: 6vmax;
+    }
+    .cert-list {
+            margin-left: 8vmax;
+            margin-right: 6vmax;
+    }
+    */
+
+    /* Style for the text at the bottom right of the chart */
+    .key {
+            color: #000000;
+            padding: 0.2vmax;
+            font-size: 1vmax;
+            text-align: right;
+            display: grid;
+            grid-template-rows: 1.68vmax;
+            grid-column-gap: 0.2vmax;
+            grid-gap: 0.1vmax;
+    }
+
+    /* Primary style for the chart, which is the parent container for everything else. */
+    .certchart {
+            zoom: 0.585; /* Nov 2026: scales the chart to fit the wider Security Operations area */
+            position: relative;
+            background: white;
+            color: #323232;
+            font-weight: 300;
+            margin-top: 1vmax;
+            margin-left: 1vmax;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-family: "Segoe UI", "Calibri", Tahoma, "Geneva", Verdana, sans-serif;
+            float: left;
+    }
+    
+    /* Background grid for domain titles and borders */
+    .certbg {
+            background: #ffffff;
+            justify-content: left;
+            display: grid;
+            position: relative;
+            grid-template-columns: [silllevel] 0.8vmax [network] 7.5vmax [iam] 2.7vmax [engineer] 21.9vmax [asset] 7.5vmax [mgmt] 33.9vmax [testing] 7.5vmax [software] 5.1vmax [defops] 31.5vmax [offops] 48.3vmax;
+            grid-template-rows: [domain] 2vmax [chart] 42.8vmax;
+            column-gap: 0.2vmax;
+            /* row-gap: 0.2vmax; */
+            white-space: pre-wrap;
+            line-height: 130%;
+            left: -0.7vmax;
+    }
+    
+    /* Style for the title text of each domain */
+    .domaintitle {
+            font-weight: 450;
+            font-size: 0.8vmax;
+            text-align: center;
+            align-content: bottom;
+            justify-content: center;
+            align-self: flex-end;
+            display: flex;
+            margin-bottom: 0.1vmax;
+    }
+    
+    /* Styles for each certification domain box. This also allows for the placement of sub-domain shaded boxes. */
+    .skilllevelcontainer {
+            display: grid;
+    }
+
+    .networkcontainer {
+            display: grid;
+            border: 2px solid var(--green);
+            border-radius: 0.25vmax;
+    }
+    
+    .iamcontainer {
+            display: grid;
+            border: 2px solid var(--teal);
+            border-radius: 0.25vmax;
+    }
+    
+    .engineercontainer {
+            justify-content: center;
+            display: grid;
+            border: 2px solid var(--orange);
+            border-radius: 0.25vmax;
+            grid-template-columns: repeat(7, 2.3vmax);
+            grid-template-rows: 1vmax auto;
+            column-gap: 0.1vmax;
+    }
+    
+    .assetcontainer {
+            display: grid;
+            border: 2px solid var(--yellow);
+            border-radius: 0.25vmax;
+    }
+    
+    .mgmtcontainer {
+            justify-content: center;
+            display: grid;
+            border: 2px solid var(--black);
+            border-radius: 0.25vmax;
+            grid-template-columns: repeat(9, 2.3vmax);
+            grid-template-rows: 1vmax auto;
+            column-gap: 0.1vmax;
+    }
+    
+    .testingcontainer {
+            display: grid;
+            border: 2px solid var(--magenta);
+            border-radius: 0.25vmax;
+    }
+    
+    .softwarecontainer {
+            display: grid;
+            border: 2px solid var(--skyblue);
+            border-radius: 0.25vmax;
+    }
+    
+    .operationscontainer {
+            display: grid;
+            border: 2px solid var(--red);
+            border-radius: 0.25vmax;
+            grid-template-columns: 2.2vmax 2.2vmax 2.2vmax 2.3vmax 2.2vmax 2.3vmax 2.2vmax 2.2vmax 2.2vmax 2.2vmax 2.2vmax 2.2vmax 2.1vmax 2.2vmax 2.2vmax 2.2vmax 2.2vmax 2.2vmax 2.2vmax 2.2vmax 2.2vmax 2.2vmax 2.2vmax;
+            grid-template-rows: 1vmax auto;
+            column-gap: 0.2vmax;
+    }
+    
+    /* Style for sub-domain titles. Mostly to allow for proper spanning. */
+    .subtitle1 {
+            font-weight: 400;
+            font-size: 0.5vmax;
+            text-align: center;
+            align-content: bottom;
+            justify-content: center;
+            align-self: flex-end;
+            display: flex;
+    }
+    
+    .subtitle2 {
+            font-weight: 400;
+            font-size: 0.5vmax;
+            text-align: center;
+            align-content: bottom;
+            justify-content: center;
+            align-self: flex-end;
+            display: flex;
+            grid-column: span 2;
+    }
+    
+    .subtitle3 {
+            font-weight: 400;
+            font-size: 0.5vmax;
+            text-align: center;
+            align-content: bottom;
+            justify-content: center;
+            align-self: flex-end;
+            display: flex;
+            grid-column: span 3;
+    }
+
+    .subtitle4 {
+            font-weight: 400;
+            font-size: 0.5vmax;
+            text-align: center;
+            align-content: bottom;
+            justify-content: center;
+            align-self: flex-end;
+            display: flex;
+            grid-column: span 4;
+    } 
+    .subtitle5 {
+            font-weight: 400;
+            font-size: 0.5vmax;
+            text-align: center;
+            align-content: bottom;
+            justify-content: center;
+            align-self: flex-end;
+            display: flex;
+            grid-column: span 5;
+    }
+    
+    /* Style for certification boxes, separated by domain for proper coloring. Also used to indicate how many boxes to span the certs. */
+    .engsubdomain1 {
+            display: flex;
+            background: var(--orangelt);
+            column-gap: 1vmax;
+    }
+    
+    .engsubdomain4 {
+            display: flex;
+            background: var(--orangelt);
+            grid-column: span 4;
+            column-gap: 1vmax;
+    }
+    
+    .mgmtsubdomain4 {
+            display: flex;
+            background: var(--blacklt);
+            grid-column: span 4;
+            column-gap: 1vmax;
+    }
+    
+    .bluesubdomain2 {
+            display: flex;
+            background: var(--bluelt);
+            grid-column: span 2;
+            margin-left: 0.1vmax;
+    }
+    
+    .redsubdomain2 {
+            display: flex;
+            background: var(--redlt);
+            grid-column: span 2;
+            column-gap: 1vmax;
+    }
+    
+    .redsubdomain5 {
+            display: flex;
+            background: var(--redlt);
+            grid-column: span 5;
+            column-gap: 1vmax;
+    }
+
+    .subtitle7 {
+            font-weight: 400;
+            font-size: 0.5vmax;
+            text-align: center;
+            align-content: bottom;
+            justify-content: center;
+            align-self: flex-end;
+            display: flex;
+            grid-column: span 7;
+    }
+
+    .redsubdomain7 {
+            display: flex;
+            background: var(--redlt);
+            grid-column: span 7;
+            column-gap: 1vmax;
+    }
+
+    /* Mixed offensive (red) / defensive (blue) sub-domains: Cloud and AI */
+    .purplesubdomain3 {
+            display: flex;
+            background: var(--purplelt);
+            grid-column: span 3;
+            margin-left: 0.1vmax;
+    }
+
+    /* Nov 2026 additions: wide multi-discipline bars, items bridging Defensive/Offensive, generic sub-domain shading */
+    [class^="mgmtbar"] {
+            background: var(--black);
+            color: #ffffff;
+            font-weight: 400;
+            align-items: center;
+            justify-items: center;
+            text-decoration: none;
+            display: grid;
+            border: 0.05vmax solid var(--blackdk);
+            border-radius: 0.25vmax;
+    }
+    .mgmtbar2 { grid-column: span 2; }
+    .mgmtbar3 { grid-column: span 3; }
+    .mgmtbar4 { grid-column: span 4; }
+    .mgmtbar5 { grid-column: span 5; }
+    .mgmtbar6 { grid-column: span 6; }
+    .mgmtbar7 { grid-column: span 7; }
+    .mgmtbar8 { grid-column: span 8; }
+    .mgmtbar9 { grid-column: span 9; }
+    .mgmtbar10 { grid-column: span 10; }
+    .mgmtbar11 { grid-column: span 11; }
+    .mgmtbar12 { grid-column: span 12; }
+    .mgmtbar13 { grid-column: span 13; }
+    .mgmtbar14 { grid-column: span 14; }
+    .mgmtbar15 { grid-column: span 15; }
+    .mgmtbar16 { grid-column: span 16; }
+    .mgmtbar17 { grid-column: span 17; }
+    .mgmtbar18 { grid-column: span 18; }
+    .mgmtbar19 { grid-column: span 19; }
+    .mgmtbar20 { grid-column: span 20; }
+    .mgmtbar21 { grid-column: span 21; }
+    .mgmtbar22 { grid-column: span 22; }
+    .mgmtbar23 { grid-column: span 23; }
+    .mgmtbar24 { grid-column: span 24; }
+    .mgmtbar25 { grid-column: span 25; }
+    .mgmtbar26 { grid-column: span 26; }
+    .mgmtbar27 { grid-column: span 27; }
+    .mgmtbar28 { grid-column: span 28; }
+    .mgmtbar29 { grid-column: span 29; }
+    .mgmtbar30 { grid-column: span 30; }
+    .mgmtbar31 { grid-column: span 31; }
+    .mgmtbar32 { grid-column: span 32; }
+    .mgmtbar33 { grid-column: span 33; }
+    .mgmtbar34 { grid-column: span 34; }
+    .mgmtbar35 { grid-column: span 35; }
+    .mgmtbar36 { grid-column: span 36; }
+    .mgmtbar37 { grid-column: span 37; }
+    .mgmtbar38 { grid-column: span 38; }
+    .mgmtbar39 { grid-column: span 39; }
+    .mgmtbar40 { grid-column: span 40; }
+    .mgmtbar41 { grid-column: span 41; }
+    .mgmtbar42 { grid-column: span 42; }
+    .mgmtbar43 { grid-column: span 43; }
+    .mgmtbar44 { grid-column: span 44; }
+    .mgmtbar45 { grid-column: span 45; }
+    .mgmtbar46 { grid-column: span 46; }
+    .mgmtbar47 { grid-column: span 47; }
+    .mgmtbar48 { grid-column: span 48; }
+    .mgmtbar49 { grid-column: span 49; }
+    .mgmtbar50 { grid-column: span 50; }
+    .mgmtbar51 { grid-column: span 51; }
+    .mgmtbar52 { grid-column: span 52; }
+    .mgmtbar53 { grid-column: span 53; }
+    .mgmtbar54 { grid-column: span 54; }
+    .mgmtbar55 { grid-column: span 55; }
+    .mgmtbar56 { grid-column: span 56; }
+    .mgmtbar57 { grid-column: span 57; }
+    .mgmtbar58 { grid-column: span 58; }
+    .mgmtbar59 { grid-column: span 59; }
+    .mgmtbar60 { grid-column: span 60; }
+    .mgmtbar61 { grid-column: span 61; }
+    .mgmtbar62 { grid-column: span 62; }
+    .mgmtbar63 { grid-column: span 63; }
+    .mgmtbar64 { grid-column: span 64; }
+    .mgmtbar65 { grid-column: span 65; }
+    .mgmtbar66 { grid-column: span 66; }
+    .mgmtbar67 { grid-column: span 67; }
+    .mgmtbar68 { grid-column: span 68; }
+    .mgmtbar69 { grid-column: span 69; }
+    .blueopsbridge, .redopsbridge {
+            color: #ffffff;
+            font-weight: 400;
+            align-items: center;
+            justify-items: center;
+            text-decoration: none;
+            display: grid;
+            border-radius: 0.25vmax;
+    }
+    .blueopsbridge { background: var(--blue); border: 0.05vmax solid var(--bluedk); }
+    .redopsbridge { background: var(--red); border: 0.05vmax solid var(--reddk); }
+    .blueopsbridge { grid-column: span 3; }
+    .redopsbridge { grid-column: span 3; }
+    .defopscontainer, .offopscontainer {
+            justify-content: center;
+            display: grid;
+            border-radius: 0.25vmax;
+            grid-template-rows: 1vmax auto;
+            column-gap: 0.1vmax;
+    }
+    .defopscontainer { border: 2px solid var(--blue); }
+    .offopscontainer { border: 2px solid var(--red); }
+    .opstitle {
+            font-weight: 400;
+            font-size: 0.5vmax;
+            text-align: center;
+            justify-content: center;
+            align-self: flex-end;
+            display: flex;
+    }
+    .shadeblue { display: flex; background: var(--bluelt); }
+    .shadered { display: flex; background: var(--redlt); }
+    .shadepurple { display: flex; background: var(--purplelt); }
+
+    /* Price filter (runs entirely in the browser; no network requests) */
+    .pricefilter {
+            display: flex;
+            align-items: center;
+            gap: 0.8vmax;
+            font-size: 0.9vmax;
+            font-weight: 400;
+            padding: 0 0 0.4vmax 0.2vmax;
+            text-align: left;
+    }
+    .pricefilter input[type="number"] { width: 6vmax; font-size: 0.9vmax; }
+    .pricefilter input[type="range"] { width: 16vmax; }
+    .pricefilter button { font-size: 0.8vmax; }
+    .pricefiltered { opacity: 0.1; pointer-events: none; }
+
+    /* Generated: category colours at wider spans, wide bars and sub-domain shading */
+    .blueopsitemw2 {
+            background: var(--blue);
+            color: #ffffff;
+            font-weight: 400;
+            align-items: center;
+            justify-items: center;
+            text-decoration: none;
+            display: grid;
+            border: 0.05vmax solid var(--bluedk);
+            border-radius: 0.25vmax;
+            grid-column: span 2;
+    }
+    .engineeritemw3 {
+            background: var(--orange);
+            color: #ffffff;
+            font-weight: 400;
+            align-items: center;
+            justify-items: center;
+            text-decoration: none;
+            display: grid;
+            border: 0.05vmax solid var(--orangedk);
+            border-radius: 0.25vmax;
+            grid-column: span 3;
+    }
+    .mgmtitemw2 {
+            background: var(--black);
+            color: #ffffff;
+            font-weight: 400;
+            align-items: center;
+            justify-items: center;
+            text-decoration: none;
+            display: grid;
+            border: 0.05vmax solid var(--blackdk);
+            border-radius: 0.25vmax;
+            grid-column: span 2;
+    }
+    .mgmtitemw3 {
+            background: var(--black);
+            color: #ffffff;
+            font-weight: 400;
+            align-items: center;
+            justify-items: center;
+            text-decoration: none;
+            display: grid;
+            border: 0.05vmax solid var(--blackdk);
+            border-radius: 0.25vmax;
+            grid-column: span 3;
+    }
+    .networkitemw3 {
+            background: var(--green);
+            color: #ffffff;
+            font-weight: 400;
+            align-items: center;
+            justify-items: center;
+            text-decoration: none;
+            display: grid;
+            border: 0.05vmax solid var(--greendk);
+            border-radius: 0.25vmax;
+            grid-column: span 3;
+    }
+    .redopsitemw2 {
+            background: var(--red);
+            color: #ffffff;
+            font-weight: 400;
+            align-items: center;
+            justify-items: center;
+            text-decoration: none;
+            display: grid;
+            border: 0.05vmax solid var(--reddk);
+            border-radius: 0.25vmax;
+            grid-column: span 2;
+    }
+    .shadeorange { display: flex; background: var(--orangelt); }
+    .shadegrey { display: flex; background: var(--blacklt); }
+
+    /* Foreground grid for certification squares */
+    .certcontainer {
+            justify-content: center;
+            text-align: center;
+            align-content: center;
+            line-height: 120%;
+            display: grid;
+            position: absolute;
+            font-size:0.6vmax;
+            top: 1.573vmax;
+            left: -0.559vmax;
+            grid-template-columns: [skilllevel] 1.7vmax [network] 2.3vmax 2.3vmax 2.3vmax 0.4vmax [iam] 2.3vmax 0.4vmax [engineer] 2.3vmax 2.3vmax 2.3vmax 2.3vmax 2.3vmax 2.3vmax 2.3vmax 2.3vmax 2.3vmax 0.4vmax [asset] 2.3vmax 2.3vmax 2.3vmax 0.4vmax [mgmt] 2.3vmax 2.3vmax 2.3vmax 2.3vmax 2.3vmax 2.3vmax 2.3vmax 2.3vmax 2.3vmax 2.3vmax 2.3vmax 2.3vmax 2.3vmax 2.3vmax 0.4vmax [testing] 2.3vmax 2.3vmax 2.3vmax 0.4vmax [software] 2.3vmax 2.3vmax 0.4vmax [defops] 2.3vmax 2.3vmax 2.3vmax 2.3vmax 2.3vmax 2.3vmax 2.3vmax 2.3vmax 2.3vmax 2.3vmax 2.3vmax 2.3vmax 2.3vmax 0.4vmax [offops] 2.3vmax 2.3vmax 2.3vmax 2.3vmax 2.3vmax 2.3vmax 2.3vmax 2.3vmax 2.3vmax 2.3vmax 2.3vmax 2.3vmax 2.3vmax 2.3vmax 2.3vmax 2.3vmax 2.3vmax 2.3vmax 2.3vmax 2.3vmax;
+            grid-template-rows: repeat(27, 1.5vmax);
+            column-gap: 0.1vmax;
+            row-gap: 0.1vmax;
+            white-space: pre-wrap;
+    }
+    
+    /* Skill level grid overlayed on top of .certcontainer to show
+    .skilllevel {
+        justify-content: center;
+        text-align: center;
+        align-content: center;
+        line-height: 120%;
+        display: grid;
+        position: absolute;
+        font-size:0.6vmax;
+        top: 3.5vmax;
+        left: 2.6vmax;
+        grid-template-columns: max-content;
+        grid-template-rows: 13.5vmax 22.5vmax 7.5vmax;
+        column-gap: 0.1vmax;
+        row-gap: 0.1vmax;
+        white-space: pre-wrap;        
+    } */
+
+    .spacer {
+            background: none;
+    }
+    
+    .spacer5 {
+            background: none;
+            grid-column: span 5;
+    }
+    
+    .spacer10 {
+            background: none;
+            grid-column: span 10;
+    }
+    
+    .skilllevelitem {
+            transform: rotate(270deg);
+            justify-items: right;
+            align-items: flex-end;
+            font-weight: 600;
+            font-size: 0.8vmax;
+            display: grid;
+    }
+
+    .networkitem1 {
+            background: var(--green);
+            color: #ffffff;
+            font-weight: 400;
+            align-items: center;
+            justify-items: center;
+            text-decoration: none;
+            display: grid;
+            border: 0.05vmax solid var(--greendk);
+            border-radius: 0.25vmax;
+    }
+    
+    .networkitem2 {
+            background: var(--green);
+            color: #ffffff;
+            font-weight: 400;
+            align-items: center;
+            justify-items: center;
+            text-decoration: none;
+            display: grid;
+            border: 0.05vmax solid var(--greendk);
+            border-radius: 0.25vmax;
+            grid-column: span 3;
+    }
+    
+    .iamitem1 {
+            background: var(--teal);
+            color: #ffffff;
+            font-weight: 400;
+            align-items: center;
+            justify-items: center;
+            text-decoration: none;
+            display: grid;
+            border: 0.05vmax solid var(--tealdk);
+            border-radius: 0.25vmax;
+    }
+    
+    .engineeritem1 {
+            background: var(--orange);
+            color: #ffffff;
+            font-weight: 400;
+            align-items: center;
+            justify-items: center;
+            text-decoration: none;
+            display: grid;
+            border: 0.05vmax solid var(--orangedk);
+            border-radius: 0.25vmax;
+    }
+    
+    .engineeritem2 {
+            background: var(--orange);
+            color: #ffffff;
+            font-weight: 400;
+            align-items: center;
+            justify-items: center;
+            text-decoration: none;
+            display: grid;
+            border: 0.05vmax solid var(--orangedk);
+            border-radius: 0.25vmax;
+            grid-column: span 3;
+    }
+    
+    .engineeritem3 {
+            background: var(--orange);
+            color: #ffffff;
+            font-weight: 400;
+            align-items: center;
+            justify-items: center;
+            text-decoration: none;
+            display: grid;
+            border: 0.05vmax solid var(--orangedk);
+            border-radius: 0.25vmax;
+            grid-column: span 5;
+    }
+    
+    .engineeritem4 {
+            background: var(--orange);
+            color: #ffffff;
+            font-weight: 400;
+            align-items: center;
+            justify-items: center;
+            text-decoration: none;
+            display: grid;
+            border: 0.05vmax solid var(--orangedk);
+            border-radius: 0.25vmax;
+            grid-column: span 6;
+    }
+    
+    .assetitem1 {
+            background: var(--yellow);
+            color: #ffffff;
+            font-weight: 400;
+            align-items: center;
+            justify-items: center;
+            text-decoration: none;
+            display: grid;
+            border: 0.05vmax solid var(--yellowdk);
+            border-radius: 0.25vmax;
+    }
+    
+    .assetitem2 {
+            background: var(--yellow);
+            color: #ffffff;
+            font-weight: 400;
+            align-items: center;
+            justify-items: center;
+            text-decoration: none;
+            display: grid;
+            border: 0.05vmax solid var(--yellowdk);
+            border-radius: 0.25vmax;
+            grid-column: span 3;
+    }
+    
+    .mgmtitem1 {
+            background: var(--black);
+            color: #ffffff;
+            font-weight: 400;
+            align-items: center;
+            justify-items: center;
+            text-decoration: none;
+            display: grid;
+            border: 0.05vmax solid var(--blackdk);
+            border-radius: 0.25vmax;
+    }
+    
+    .mgmtitem2 {
+            background: var(--black);
+            color: #ffffff;
+            font-weight: 400;
+            align-items: center;
+            justify-items: center;
+            text-decoration: none;
+            display: grid;
+            border: 0.05vmax solid var(--blackdk);
+            border-radius: 0.25vmax;
+            grid-column: span 3;
+    }
+
+    .mgmtitem4x {
+            background: var(--black);
+            color: #ffffff;
+            font-weight: 400;
+            align-items: center;
+            justify-items: center;
+            text-decoration: none;
+            display: grid;
+            border: 0.05vmax solid var(--blackdk);
+            border-radius: 0.25vmax;
+            grid-column: span 4;
+    }
+
+    .mgmtitem3 {
+            background: var(--black);
+            color: #ffffff;
+            font-weight: 400;
+            align-items: center;
+            justify-items: center;
+            text-decoration: none;
+            display: grid;
+            border: 0.05vmax solid var(--blackdk);
+            border-radius: 0.25vmax;
+            grid-column: span 5;
+    }
+    
+    .mgmtitem4 {
+            background: var(--black);
+            color: #ffffff;
+            font-weight: 400;
+            align-items: center;
+            justify-items: center;
+            text-decoration: none;
+            display: grid;
+            border: 0.05vmax solid var(--blackdk);
+            border-radius: 0.25vmax;
+            grid-column: span 6;
+    }
+    
+    .mgmtitem5 {
+            background: var(--black);
+            color: #ffffff;
+            font-weight: 400;
+            align-items: center;
+            justify-items: center;
+            text-decoration: none;
+            display: grid;
+            border: 0.05vmax solid var(--blackdk);
+            border-radius: 0.25vmax;
+            grid-column: span 6;
+    }
+    
+    .mgmtitem15 {
+            background: var(--black);
+            color: #ffffff;
+            font-weight: 400;
+            align-items: center;
+            justify-items: center;
+            text-decoration: none;
+            display: grid;
+            border: 0.05vmax solid var(--blackdk);
+            border-radius: 0.25vmax;
+            grid-column: span 19;
+    }
+    
+    .mgmtitem17 {
+            background: var(--black);
+            color: #ffffff;
+            font-weight: 400;
+            align-items: center;
+            justify-items: center;
+            text-decoration: none;
+            display: grid;
+            border: 0.05vmax solid var(--blackdk);
+            border-radius: 0.25vmax;
+            grid-column: span 22;
+    }
+    .mgmtitemCASP {
+            background: var(--black);
+            color: #ffffff;
+            font-weight: 400;
+            align-items: center;
+            justify-items: center;
+            text-decoration: none;
+            display: grid;
+            border: 0.05vmax solid var(--blackdk);
+            border-radius: 0.25vmax;
+            grid-column: span 22;
+    }   
+    .mgmtitem25 {
+            background: var(--black);
+            color: #ffffff;
+            font-weight: 400;
+            align-items: center;
+            justify-items: center;
+            text-decoration: none;
+            display: grid;
+            border: 0.05vmax solid var(--blackdk);
+            border-radius: 0.25vmax;
+            grid-column: span 32;
+    }
+    
+    .testitem1 {
+            background: var(--purple);
+            color: #ffffff;
+            font-weight: 400;
+            align-items: center;
+            justify-items: center;
+            text-decoration: none;
+            display: grid;
+            border: 0.05vmax solid var(--purpledk);
+            border-radius: 0.25vmax;
+    }
+    
+    .testitem2 {
+            background: var(--purple);
+            color: #ffffff;
+            font-weight: 400;
+            align-items: center;
+            justify-items: center;
+            text-decoration: none;
+            display: grid;
+            border: 0.05vmax solid var(--purpledk);
+            border-radius: 0.25vmax;
+            grid-column: span 3;
+    }
+    
+    .softwareitem1 {
+            background: var(--skyblue);
+            color: #ffffff;
+            font-weight: 400;
+            align-items: center;
+            justify-items: center;
+            text-decoration: none;
+            display: grid;
+            border: 0.05vmax solid var(--skybluedk);
+            border-radius: 0.25vmax;
+    }
+    
+    .softwareitem2 {
+            background: var(--skyblue);
+            color: #ffffff;
+            font-weight: 400;
+            align-items: center;
+            justify-items: center;
+            text-decoration: none;
+            display: grid;
+            border: 0.05vmax solid var(--skybluedk);
+            border-radius: 0.25vmax;
+            grid-column: span 3;
+    }
+    
+    .softwareitem6 {
+            background: var(--skyblue);
+            color: #ffffff;
+            font-weight: 400;
+            align-items: center;
+            justify-items: center;
+            text-decoration: none;
+            display: grid;
+            border: 0.05vmax solid var(--skybluedk);
+            border-radius: 0.25vmax;
+            grid-column: span 9;
+    }
+    
+    .blueopsitem1 {
+            background: var(--blue);
+            color: #ffffff;
+            font-weight: 400;
+            align-items: center;
+            justify-items: center;
+            text-decoration: none;
+            display: grid;
+            border: 0.05vmax solid var(--bluedk);
+            border-radius: 0.25vmax;
+    }
+    
+    .blueopsitem2 {
+            background: var(--blue);
+            color: #ffffff;
+            font-weight: 400;
+            align-items: center;
+            justify-items: center;
+            text-decoration: none;
+            display: grid;
+            border: 0.05vmax solid var(--bluedk);
+            border-radius: 0.25vmax;
+            grid-column: span 2;
+    }
+    
+    .blueopsitem3 {
+            background: var(--blue);
+            color: #ffffff;
+            font-weight: 400;
+            align-items: center;
+            justify-items: center;
+            text-decoration: none;
+            display: grid;
+            border: 0.05vmax solid var(--bluedk);
+            border-radius: 0.25vmax;
+            grid-column: span 5;
+    }
+
+    .blueopsitem9 {
+            background: var(--blue);
+            color: #ffffff;
+            font-weight: 400;
+            align-items: center;
+            justify-items: center;
+            text-decoration: none;
+            display: grid;
+            border: 0.05vmax solid var(--bluedk);
+            border-radius: 0.25vmax;
+            grid-column: span 11;
+    }
+    
+    .redopsitem1 {
+            background: var(--red);
+            color: #ffffff;
+            font-weight: 400;
+            align-items: center;
+            justify-items: center;
+            text-decoration: none;
+            display: grid;
+            border: 0.05vmax solid var(--reddk);
+            border-radius: 0.25vmax;
+    }
+    
+    .redopsitem2 {
+            background: var(--red);
+            color: #ffffff;
+            font-weight: 400;
+            align-items: center;
+            justify-items: center;
+            text-decoration: none;
+            display: grid;
+            border: 0.05vmax solid var(--reddk);
+            border-radius: 0.25vmax;
+            grid-column: span 2;
+    }
+    
+    .redopsitem3 {
+            background: var(--red);
+            color: #ffffff;
+            font-weight: 400;
+            align-items: center;
+            justify-items: center;
+            text-decoration: none;
+            display: grid;
+            border: 0.05vmax solid var(--reddk);
+            border-radius: 0.25vmax;
+            grid-column: span 3;
+    }
+
+    /* Draft of different tooltip
+    .tooltiptext {
+        visibility: hidden;
+        background: inherit;
+        color: inherit;
+        text-align: left;
+        padding: 0.3vmax;
+        border-radius: 0.2vmax;
+        
+        position:absolute;
+        bottom: 97%;
+        left: 50%;
+        margin-left: -17.8%;
+    }
+    
+    .mgmtitem25:hover .tooltiptext {
+        visibility: visible;
+    }
+
+    .tooltiptext::after {
+        content: " ";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: black transparent transparent transparent;
+    } */
+    
+    /* Certification tooltip hover text format */
+    [tooltiptext]:before {
+        position: absolute;
+        content: attr(tooltiptext);
+        width: max-content;
+        height: max-content;
+        padding: 0.4vmax;
+        background: inherit;
+        border: inherit;
+        border-radius: 0.2vmax;
+        color: inherit;
+        text-align: left;
+        display: none;
+        font-size: 125%;
+    }
+    
+    [tooltiptext]:hover:before {
+        display: block;    
+    }
+    
+    [tooltiptexttitle]:before {
+        position: absolute;
+        content: attr(tooltiptexttitle);
+        width: 25vmax;
+        height: max-content;
+        padding: 0.4vmax;
+        background: var(--black);
+        border: var(--blackdk);
+        border-radius: 0.2vmax;
+        color: white;
+        text-align: left;
+        display: none;
+        font-size: 100%;
+        z-index: 1;
+
+        top: 4.5%;
+    }
+    
+    [tooltiptexttitle]:hover:before {
+        display: block;    
+    }
+    
+    [tooltiptexttitleleft]:before {
+        position: absolute;
+        content: attr(tooltiptexttitleleft);
+        width: 25vmax;
+        height: max-content;
+        padding: 0.4vmax;
+        background: var(--black);
+        border: var(--blackdk);
+        border-radius: 0.2vmax;
+        color: white;
+        text-align: left;
+        display: none;
+        font-size: 100%;
+        z-index: 1;
+
+        top: 4.5%;
+        left: 0%;
+    }
+
+    [tooltiptexttitleleft]:hover:before {
+        display: block;    
+    }
+
+    [tooltipleft]:before {
+        position: absolute;
+        content: attr(tooltipleft);
+        width: max-content;
+        height: max-content;
+        padding: 0.4vmax;
+        background: inherit;
+        border: inherit;
+        border-radius: 0.2vmax;
+        color: inherit;
+        text-align: left;
+        display: none;
+        font-size: 125%;
+        line-height: 125%;
+
+        left: 1%;
+    }
+
+    [tooltipleft]:hover:before {
+        display: block;    
+    }
+
+    [tooltipright]:before {
+        position: absolute;
+        content: attr(tooltipright);
+        width: max-content;
+        height: max-content;
+        padding: 0.4vmax;
+        background: inherit;
+        border: inherit;
+        border-radius: 0.2vmax;
+        color: inherit;
+        text-align: left;
+        display: none;
+        font-size: 125%;
+        line-height: 125%;
+
+        right: 0%;
+    }
+
+    [tooltipright]:hover:before {
+        display: block;    
+    }
+
+    /* Nov 2026: removed the narrow-screen fallback that swapped the chart for a static image of the April 2022 chart. */
+    #interactive {display: block;}
+    </style>
+    
+    <div id="interactive" class="certchart">
+        <div style="text-align:left;font-size:200%;font-weight:500;padding-bottom:0.2vmax;">Security Certification Roadmap - Retired Certifications
+
+        </div>
+        <div class="pricefilter" id="pricefilter">
+            <label for="pf-max">Max price (USD)</label>
+            <input type="number" id="pf-max" min="0" step="50" placeholder="any">
+            <input type="range" id="pf-range" min="0" max="10000" step="50" value="10000" aria-label="Maximum price">
+            <label><input type="checkbox" id="pf-unknown" checked> Show items with no published price</label>
+            <button type="button" id="pf-reset">Reset</button>
+            <span id="pf-count"></span>
+        </div>
+        <!-- Begin Background Grid -->
+            <div class="certbg"> <!-- Domain Title Row-->
+                    <div class="domaintitle"></div>
+                    <div class="domaintitle" style="color:var(--green);" tooltiptexttitleleft="     The communication and network security domain covers the ability to secure communication channels and networks. Topics include secure and converged protocols, wireless networks, cellular networks, hardware operation (warranty and redundant power) and third-party connectivity.  IP networking (IPSec, IPv4 and IPv6) are also included in this domain.">Communication and Network Security</div>
+                    <div class="domaintitle" style="color:var(--teal);" tooltiptexttitleleft="     The identity and access management domain covers the attacks that target the human gateway to gain access to data. Other topics include ways to identify users with rights to access the information and servers. Identify and access management covers the topics of applications, Single sign-on authentication, privilege escalation, Kerberos, rule-based or risk-based access control, proofing and establishment of identity.">IAM</div>
+                    <div class="domaintitle" style="color:var(--orange);" tooltiptexttitle="     The security architecture and engineering domain covers important topics concering security engineering plans, designs, and principles. Topics include assessing and mitigating information system vulnerabilities, fundamental concepts of security models and security architectures in critical areas like access control. Cloud systems, cryptography, system infiltrations (ransomware, fault-injection and more) and virtualized systems are also covered in this domain.">Security Architecture and Engineering</div>
+                    <div class="domaintitle" style="color:var(--yellow);" tooltiptexttitle="     The Asset Security domain deals with the issues related to the collection, storage, maintenance, retention and destruction of data. It also covers knowledge of different roles regarding data handling (owner, controller and custodian) as well as data protection methods and data states. Other topics include resource provision, asset classification and data lifecycle management.">Asset Security</div>
+                    <div class="domaintitle" style="color:var(--black);" tooltiptexttitle="     The security and risk management domain covers general on skills related to the implementation of user awareness programs as well as security procedures. Emphasis is also placed on risk management concerning the acquisition of new services, hardware and software (supply chain). Other skills include social engineering defense mechanisms.">Security and Risk Management</div>
+                    <div class="domaintitle" style="color:var(--purple);" tooltiptexttitle="     The security assessment and testing domain deals with all the techniques and tools used to find system vulnerabilities, weaknesses and potential areas of concern not addressed by security procedures and policies. Attack simulations, vulnerability assessment, compliance checks, and ethical disclosure also fall under this domain.">Security Assessment and Testing</div>
+                    <div class="domaintitle" style="color:var(--skyblue);" tooltiptexttitle="     The software development security domain deals with implementing software-based security protocols within environments for which the IT professional is responsible. Risk analysis, vulnerability identification and auditing of source codes are all covered in this subset. Additional topics include software-designed security, maturity models, development methodologies, open-source and third-party development security.">Software Security</div>
+                    <div class="domaintitle" style="color:var(--blue);" tooltiptexttitle="     Defensive security operations: SOC analysis, detection and threat intelligence, forensics, incident handling, and the defensive, engineering and governance side of cloud and AI security.">Defensive Security Operations</div>
+                    <div class="domaintitle" style="color:var(--red);" tooltiptexttitle="     Offensive security operations: penetration testing, red teaming, exploitation and reverse engineering, plus offensive cloud, AI and physical security.">Offensive Security Operations</div>
+                    <div class="skilllevel"></div>
+                    <div class="networkcontainer"></div>
+                    <div class="iamcontainer"></div>
+                    <div class="engineercontainer" style="grid-template-columns: repeat(9, 2.3vmax); grid-template-rows: 1vmax auto; column-gap: 0.1vmax; justify-content: center;">
+                            <div class="opstitle" style="grid-column: span 5;">Cloud / SysOps</div>
+                            <div class="opstitle" style="grid-column: span 1;">*nix</div>
+                            <div class="opstitle" style="grid-column: span 2;">ICS / IoT</div>
+                            <div class="opstitle" style="grid-column: span 1;">Architecture</div>
+                            <div class="shadeorange" style="grid-column: span 5;"></div>
+                            <div class="shadeorange" style="grid-column: span 1;"></div>
+                            <div class="shadeorange" style="grid-column: span 2;"></div>
+                            <div class="shadeorange" style="grid-column: span 1;"></div>
+                    </div>
+                    <div class="assetcontainer"></div>
+                    <div class="mgmtcontainer" style="grid-template-columns: repeat(14, 2.3vmax); grid-template-rows: 1vmax auto; column-gap: 0.1vmax; justify-content: center;">
+                            <div class="opstitle" style="grid-column: span 6;">Management</div>
+                            <div class="opstitle" style="grid-column: span 8;">GRC</div>
+                            <div class="shadegrey" style="grid-column: span 6;"></div>
+                            <div class="shadegrey" style="grid-column: span 8;"></div>
+                    </div>
+                    <div class="testingcontainer"></div>
+                    <div class="softwarecontainer"></div>
+                    <div class="defopscontainer" style="grid-template-columns: repeat(13, 2.3vmax); grid-template-rows: 1vmax auto; column-gap: 0.1vmax; justify-content: center;">
+                            <div class="opstitle" style="grid-column: span 4;">SOC / Threat Intel</div>
+                            <div class="opstitle" style="grid-column: span 2;">Cloud / AI</div>
+                            <div class="opstitle" style="grid-column: span 2;">Malware / RE</div>
+                            <div class="opstitle" style="grid-column: span 3;">Forensics</div>
+                            <div class="opstitle" style="grid-column: span 2;">Incident Handling</div>
+                            <div class="shadeblue" style="grid-column: span 4;"></div>
+                            <div class="shadeblue" style="grid-column: span 2;"></div>
+                            <div class="shadeblue" style="grid-column: span 2;"></div>
+                            <div class="shadeblue" style="grid-column: span 3;"></div>
+                            <div class="shadeblue" style="grid-column: span 2;"></div>
+                    </div>
+                    <div class="offopscontainer" style="grid-template-columns: repeat(20, 2.3vmax); grid-template-rows: 1vmax auto; column-gap: 0.1vmax; justify-content: center;">
+                            <div class="opstitle" style="grid-column: span 7;">Penetration Testing</div>
+                            <div class="opstitle" style="grid-column: span 6;">Exploitation / RE / Hardware</div>
+                            <div class="opstitle" style="grid-column: span 3;">Cloud</div>
+                            <div class="opstitle" style="grid-column: span 2;">AI</div>
+                            <div class="opstitle" style="grid-column: span 2;">Physical</div>
+                            <div class="shadered" style="grid-column: span 7;"></div>
+                            <div class="shadered" style="grid-column: span 6;"></div>
+                            <div class="shadered" style="grid-column: span 3;"></div>
+                            <div class="shadered" style="grid-column: span 2;"></div>
+                            <div class="shadered" style="grid-column: span 2;"></div>
+                    </div>
+            <!-- Begin Foreground Grid -->
+            <div class="certcontainer">
+                    <!-- Row 1 (intentionally blank to make room for sub-domain titles) -->
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <!-- Row 2 -->
+                    <div class="spacer"></div>
+                    <a data-entry="retired-0" class="networkitem1" href="https://www.cisco.com/c/en/us/training-events/training-certifications/certifications/architect/ccar.html" tooltipleft="Cisco Certified Architect
+    ~$15,000 board exam
+    Retired 1 Mar 2021" tabindex="0" target="_blank" >CCAr</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <!-- Row 3 -->
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-1" class="engineeritem1" style="font-size:0.5vmax;" href="https://www.crest-approved.org/examination/technical-security-architecture/index.html" tooltiptext="CREST Registered Technical Security Architect
+    $2,300 two exams
+    In person in the UK
+    No longer in the CREST exam catalog" tabindex="0" target="_blank" >CREST CRTSA</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <!-- Row 4 -->
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <!-- Row 5 -->
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-2" class="engineeritem1" href="https://training.suse.com/certification/sea/" tooltiptext="SUSE Enterprise Architect
+    ~$1,050 multiple exam
+    Defunct" tabindex="0" target="_blank" >SEA</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-3" class="mgmtitemw2" href="https://www.ncsc.gov.uk/information/about-certified-professional-scheme" tooltiptext="NCSC Certified Cybersecurity Professional - Lead Practitioner
+    $1388 interview
+    Scheme closed to new applicants" tabindex="0" target="_blank" >NCSC CCPLP</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-4" class="redopsitemw2" href="https://www.offensive-security.com/ctp-osce/" tooltiptext="Offensive Security Certified Expert
+    $2,699 lab
+    Retired 2020" tabindex="0" target="_blank" >OSCE</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <!-- Row 6 -->
+                    <div class="skilllevelitem"><span style="color:var(--reddk)">Expert</span></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-5" class="engineeritem1" href="https://training.linuxfoundation.org/certification/linux-foundation-certified-engineer-lfce/" tooltiptext="Linux Foundation Certified Engineer
+    $300 exam
+    Retired" tabindex="0" target="_blank" >LFCE</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-6" class="mgmtitemw2" href="https://www.ncsc.gov.uk/information/about-certified-professional-scheme" tooltiptext="NCSC Certified Cybersecurity Professional - Senior Practitioner
+    $907 interview
+    Scheme closed to new applicants" tabindex="0" target="_blank" >NCSC CCPSP</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <!-- Row 7 -->
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <!-- Row 8 -->
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-8" class="mgmtitemw2" href="https://www.ncsc.gov.uk/information/about-certified-professional-scheme" tooltiptext="NCSC Certified Cybersecurity Professional - Practitioner
+    $225 interview
+    Scheme closed to new applicants" tabindex="0" target="_blank" >NCSC CCPP</a>
+                    <a data-entry="retired-7" class="mgmtitem1" href="https://www.exin.com/certifications/information-security-management-expert-based-isoiec-27001-exam" tooltiptext="EXIN Information Security Management Expert
+    EST $799 oral exam
+    Withdrawn 31 Dec 2025" tabindex="0" target="_blank" >EEXIN ISM</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-9" class="testitem1" href="https://www.giac.org/certification/gsna" tooltiptext="GIAC Systems and Network Auditor
+    $999 exam
+    SANS course recommended
+    In abeyance - renewal only" tabindex="0" target="_blank" >GSNA</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-10" class="redopsitem1" href="https://www.elearnsecurity.com/certification/ecptx" tooltiptext="eLearnSecurity Certified Penetration Tester eXtreme
+    $400 lab
+    Retired by INE" tabindex="0" target="_blank" >eCPTX</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <!-- Row 9 -->
+                    <div class="spacer"></div>
+                    <a data-entry="retired-11" class="networkitem1" href="https://training.fortinet.com/local/staticpage/view.php?page=fcx_cybersecurity" tooltipleft="Fortinet Certified Expert
+    $400 written exam
+    $1600 in-person lab
+    Replaced by NSE 8 on 15 Jul 2026" tabindex="0" target="_blank" >FCX</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-12" class="softwareitem1" href="https://www.giac.org/certification/secure-software-programmer-java-gssp-java" tooltiptext="GIAC Secure Software Programmer JAVA or .NET
+    $1,999 exam
+    SANS course recommended
+    Retired" tabindex="0" target="_blank" >GSSP</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <!-- Row 10 -->
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-13" class="blueopsitemw2" href="https://elearnsecurity.com/product/ecmap-certification/" tooltiptext="eLearnSecurity Certified Malware Analysis Professional
+    $400 exam
+    Retired by INE" tabindex="0" target="_blank" >eCMAP</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <!-- Row 11 -->
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-14" class="blueopsitem1" href="https://www.mosse-institute.com/certifications/mcd-certified-code-deobfuscation-specialist.html" tooltiptext="Mosse Institute Certified Code Deobfuscation Specialist Certification
+    $450 certification programme
+    100% practical. No expiry.
+    No longer in the Mosse Institute catalog" tabindex="0" target="_blank" >MCD</a>
+                    <a data-entry="retired-17" class="blueopsitem1" href="https://elearnsecurity.com/product/ecre-certification/" tooltiptext="eLearnSecurity Certified Reverse Engineer
+    $400 lab
+    Retired by INE" tabindex="0" target="_blank" >eCRE</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-15" class="blueopsitem1" href="https://schoolofcybersecurity.com/cyber-certified-experts-cce-program/available-certifications/certified-expert-incident-manager-ceim/" tooltiptext="Lunarline Certified Expert Incident Manager
+    $350 exam
+    Lunarline certifications discontinued" tabindex="0" target="_blank" >CEIM</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-16" class="redopsitem1" href="https://www.seco-institute.org/certifications/ethical-hacking-certification-track/" tooltiptext="SECO Ethical Hacker Expert
+    TBD (still)
+    Being redesigned
+    Never launched" tabindex="0" target="_blank" >S-EHE</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-17" class="redopsitem1" href="https://elearnsecurity.com/product/ecre-certification/" tooltiptext="eLearnSecurity Certified Reverse Engineer
+    $400 lab
+    Retired by INE" tabindex="0" target="_blank" >eCRE</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <!-- Row 12 -->
+                    <div class="spacer"></div>
+                    <a data-entry="retired-20" class="networkitem1" href="https://training.fortinet.com/local/staticpage/view.php?page=fcss_SASE" tooltipleft="Fortinet Certified Solution Specialist - Secure Access Service Edge
+    $800 two exams
+    Replaced by NSE 6-7 on 15 Jul 2026" tabindex="0" target="_blank" >FCSS SASE</a>
+                    <a data-entry="retired-18" class="networkitem1" href="https://www.paloaltonetworks.com/services/education/certification#pcnse" tooltipleft="Palo Alto Networks Certified Network Security Engineer
+    $175 exam
+    Retired 2025 - replaced by new Palo Alto role certifications" tabindex="0" target="_blank" >PCNSE</a>
+                    <a data-entry="retired-19" class="networkitemw3" href="https://training.fortinet.com/local/staticpage/view.php?page=fcss_zta" tooltipleft="Fortinet Certified Solution Specialist - Zero Trust Access
+    $800 two exams
+    Retired 30 Jun 2025" tabindex="0" target="_blank" >FCSS ZTA</a>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-21" class="engineeritem1" href="https://training.fortinet.com/local/staticpage/view.php?page=fcss_public_cloud_security" tooltiptext="Fortinet Certified Solution Specialist - Public Cloud Security
+    $400 exam
+    Replaced by NSE 6-7 on 15 Jul 2026" tabindex="0" target="_blank" >FCSS PCS</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-25" class="assetitem1" href="https://www.isc2.org/Certifications/HCISPP" tooltiptext="(ISC)2 Healthcare Information Security and Privacy Practitioner
+    $599 exam
+    Retired" tabindex="0" target="_blank" >HCISPP</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-23" class="mgmtitem1" href="https://www.schoolofcybersecurity.com/cyber-certified-experts-cce-program/available-certifications/certified-expert-security-officer-ceso" tooltiptext="Lunarline Certified Expert Security Officer
+    $350 exam
+    Lunarline certifications discontinued" tabindex="0" target="_blank" >CESO</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-24" class="mgmtitem1" href="https://www.giac.org/certification/law-data-security-investigations-gleg" tooltiptext="GIAC Law of Data Security &amp; Investigations
+    $999 exam
+    SANS course recommended
+    In abeyance - renewal only" tabindex="0" target="_blank" >GLEG</a>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-25" class="mgmtitem1" href="https://www.isc2.org/Certifications/HCISPP" tooltiptext="(ISC)2 Healthcare Information Security and Privacy Practitioner
+    $599 exam
+    Retired" tabindex="0" target="_blank" >HCISPP</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-26" class="blueopsitem1" href="http://www.iacertification.org/cerea.html" tooltiptext="IACRB Certified Expert Reserve Engineering Analyst
+    $499 exam
+    Defunct" tabindex="0" target="_blank" >CEREA</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <!-- Row 13 -->
+                    <div class="spacer"></div>
+                    <a data-entry="retired-22" class="networkitem1" href="https://www.giac.org/certification/certified-perimeter-protection-analyst-gppa" tooltipleft="GIAC Certified Perimeter Protection Analyst
+    $949 exam
+    SANS course recommended
+    Retired" tabindex="0" target="_blank" >GPPA</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-27" class="engineeritemw3" href="https://docs.microsoft.com/en-us/learn/certifications/m365-enterprise-administrator" tooltiptext="Microsoft 365 Certified Enterprise Administrator Expert
+    $165 exam
+    Retired - replaced by MS-102" tabindex="0" target="_blank" >MS-100</a>
+                    <a data-entry="retired-28" class="engineeritem1" href="https://www.giac.org/certifications/certified-windows-security-administrator-gcwn/" tooltiptext="GIAC Certified Windows Security Administrator
+    $999 exam
+    SANS course recommended
+    In abeyance - renewal only" tabindex="0" target="_blank" >GCWN</a>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-29" class="engineeritem1" href="https://www.giac.org/certifications/certified-unix-security-administrator-gcux/" tooltiptext="GIAC Certified UNIX Security Administrator
+    $949 exam
+    SANS course encouraged
+    Indefinitely unobtainable" tabindex="0" target="_blank" >GCUX</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <!-- Row 14 -->
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-30" class="engineeritem1" href="https://www.paloaltonetworks.com/services/education/certification" tooltiptext="Palo Alto Certified Cloud Security Automation Engineer
+    $350 exam
+    Retired 31 Jul 2025" tabindex="0" target="_blank" >PCSAE</a>
+                    <a data-entry="retired-31" class="engineeritem1" href="https://www.paloaltonetworks.com/services/education/certification" tooltiptext="Prisma Certified Cloud Security Engineer
+    $350 exam
+    Retired 31 Jul 2025" tabindex="0" target="_blank" >PCCSE</a>
+                    <a data-entry="retired-32" class="engineeritem1" href="https://training.fortinet.com/local/staticpage/view.php?page=fcss_security_operations" tooltiptext="Fortinet Certified Solution Specialist - Security Operations
+    $400 exam
+    Replaced by NSE 6-7 on 15 Jul 2026" tabindex="0" target="_blank" >FCSS SO</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-33" class="engineeritem1" href="https://training.fortinet.com/local/staticpage/view.php?page=fcss_ot_security" tooltiptext="Fortinet Certified Solution Specialist - OT Security
+    $400 exam
+    Replaced by NSE 6-7 on 15 Jul 2026" tabindex="0" target="_blank" >FCSS OT</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-34" class="mgmtitem1" href="https://www.giac.org/certification/gcpm" tooltiptext="GIAC Certified Project Manager
+    $999 exam
+    SANS course recommended
+    In abeyance - renewal only" tabindex="0" target="_blank" >GCPM</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-30" class="blueopsitem1" href="https://www.paloaltonetworks.com/services/education/certification" tooltiptext="Palo Alto Certified Cloud Security Automation Engineer
+    $350 exam
+    Retired 31 Jul 2025" tabindex="0" target="_blank" >PCSAE</a>
+                    <a data-entry="retired-32" class="blueopsitem1" href="https://training.fortinet.com/local/staticpage/view.php?page=fcss_security_operations" tooltiptext="Fortinet Certified Solution Specialist - Security Operations
+    $400 exam
+    Replaced by NSE 6-7 on 15 Jul 2026" tabindex="0" target="_blank" >FCSS SO</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <!-- Row 15 -->
+                    <div class="spacer"></div>
+                    <a data-entry="retired-35" class="networkitem1" href="https://training.fortinet.com/local/staticpage/view.php?page=fcss_network_security" tooltipleft="Fortinet Certificed Solution Specialist - Network Security
+    $800 two exams
+    Replaced by NSE 6-7 on 15 Jul 2026" tabindex="0" target="_blank" >FCSS NS</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-36" class="engineeritem1" href="https://training.fortinet.com/local/staticpage/view.php?page=fcp_public_cloud_security" tooltiptext="Fortinet Certified Professional - Public Cloud Security
+    $400 for 2 exams
+    Replaced by NSE 4-6 on 15 Jul 2026" tabindex="0" target="_blank" >FCP PCS</a>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-37" class="engineeritem1" href="https://training.fortinet.com/local/staticpage/view.php?page=fcp_security_operations" tooltiptext="Fortinet Certified Professional - Security Operations
+    $400 for 2 exams
+    Replaced by NSE 4-6 on 15 Jul 2026" tabindex="0" target="_blank" >FCP SO</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-38" class="assetitem1" href="https://schoolofcybersecurity.com/cyber-certified-experts-cce-program/available-certifications/certified-expert-privacy-professional-cepp/" tooltiptext="Lunarline Certified Expert Privacy Professional
+    $350 exam
+    Lunarline certifications discontinued" tabindex="0" target="_blank" >CEPP</a>
+                    <a data-entry="retired-40" class="assetitem1" href="https://docs.microsoft.com/en-us/learn/certifications/information-protection-administrator/" tooltiptext="Microsoft Certified Information Protection Administrator Associate
+    $165 exam
+    Retired 31 May 2025 - replaced by SC-401" tabindex="0" target="_blank" >SC-400</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-39" class="mgmtitem1" style="font-size:0.5vmax;" href="https://www.exin.com/certifications/information-security-management-expert-based-isoiec-27001-exam?language_content_entity=en" tooltiptext="EXIN ISO/IEC 27001 Expert
+    ~$379 Oral Presentation
+    Withdrawn 31 Dec 2025" tabindex="0" target="_blank" >EXIN 27001E</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-37" class="blueopsitem1" href="https://training.fortinet.com/local/staticpage/view.php?page=fcp_security_operations" tooltiptext="Fortinet Certified Professional - Security Operations
+    $400 for 2 exams
+    Replaced by NSE 4-6 on 15 Jul 2026" tabindex="0" target="_blank" >FCP SO</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-43" class="blueopsitem1" href="https://crest-approved.org/examination/malware-reverse-engineer/index.html" tooltiptext="CREST Certified Malware Reverse Engineer
+    $2,499 2 exams &amp; lab
+    Defunct" tabindex="0" target="_blank" >CREST CMRE</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-42" class="redopsitem1" href="https://crest-approved.org/examination/certified-wireless-specialist/index.html" tooltiptext="CREST Certified Wireless Specialist
+    $1,230 exam &amp; lab
+    Retired" tabindex="0" target="_blank" >CREST CWS</a>
+                    <a data-entry="retired-41" class="redopsitem1" href="https://www.offensive-security.com/exp312-osmr/" tooltiptext="Offensive Security MacOS Researcher
+    $2,499 exam
+    Learning subscription required
+    On hiatus since Nov 2025 - course removed Jan 2026" tabindex="0" target="_blank" >OSMR</a>
+                    <a data-entry="retired-44" class="redopsitem1" href="https://www.elearnsecurity.com/certification/ecxd" tooltiptext="eLearnSecurity Certified eXploit Developer
+    $400 lab
+    Retired by INE" tabindex="0" target="_blank" >eCXD</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <!-- Row 16 -->
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-45" class="mgmtitem1" href="https://schoolofcybersecurity.com/cyber-certified-experts-cce-program/available-certifications/certified-expert-rmf-professional-cerp/" tooltiptext="Lunarline Certified Expert RMF Professional
+    $350 exam
+    Lunarline certifications discontinued" tabindex="0" target="_blank" >CERP</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-47" class="testitem1" href="https://www.giac.org/certification/enterprise-vulnerability-assessor-geva" tooltiptext="GIAC Enterprise Vulnerability Assessor
+    $1999 exam
+    SANS course recommended
+    In abeyance - renewal only" tabindex="0" target="_blank" >GEVA</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-46" class="blueopsitemw2" href="https://www.crest-approved.org/certification-careers/crest-certifications/crest-certified-host-intrusion-analyst" tooltiptext="CREST Certified Host intrustion Analyst
+    $2,481 exam &amp; essay
+    Hands on exam in UK
+    No longer in the CREST exam catalog" tabindex="0" target="_blank" >CREST CCHIA</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <!-- Row 17 -->
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <!-- Row 18 -->
+                    <div class="skilllevelitem"><span style="color:var(--orangedk)">Intermediate</span></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-49" class="networkitem1" href="https://training.fortinet.com/local/staticpage/view.php?page=fcp_network_security" tooltipleft="Fortinet Certified Professional - Network Security
+    $400 for 2 exams
+    Replaced by NSE 4-6 on 15 Jul 2026" tabindex="0" target="_blank" >FCP NS</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-50" class="engineeritemw3" href="https://docs.microsoft.com/en-us/learn/certifications/azure-security-engineer?wt.mc_id=learningredirect_certs-web-wwl" tooltiptext="Microsoft Azure Security Engineer Associate
+    $165 exam
+    Retired 31 Aug 2026 - replaced by SC-500" tabindex="0" target="_blank" >AZ-500</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-51" class="mgmtitem1" href="https://schoolofcybersecurity.com/cyber-certified-experts-cce-program/available-certifications/certified-expert-program-manager-cepm/" tooltiptext="Lunarline Certified Expert Program Manager
+    $350 exam
+    Lunarline certifications discontinued" tabindex="0" target="_blank" >CEPM</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-52" class="mgmtitemw3" href="https://schoolofcybersecurity.com/cyber-certified-experts-cce-program/available-certifications/certified-expert-security-analyst-cesa" tooltiptext="Lunarline Certified Expert Security Analyst
+    $350 exam
+    Lunarline certifications discontinued" tabindex="0" target="_blank" >CESA</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-53" class="redopsitem1" href="https://www.eccouncil.org/programs/certified-security-analyst-ecsa/" tooltiptext="EC Council Certified Security Analyst
+    $999 exam
+    Retired 15 May 2021" tabindex="0" target="_blank" >ECSA</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-54" class="redopsitemw2" href="http://iacertification.org/cept_certified_expert_penetration_tester.html" tooltiptext="IACRB Certified Expert Penetration Tester
+    $499 exam
+    Removed 2022 - no longer available" tabindex="0" target="_blank" >CEPT</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <!-- Row 19 -->
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-57" class="engineeritem1" href="https://schoolofcybersecurity.com/cyber-certified-experts-cce-program/available-certifications/certified-expert-cloud-security-cecs" tooltiptext="Lunarline Certified Expert in Cloud Security
+    $350 exam
+    Lunarline certifications discontinued" tabindex="0" target="_blank" >CECS</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-55" class="blueopsitem1" href="https://www.cisco.com/c/en/us/training-events/training-certifications/certifications/associate/ccna-cyber-ops.html" tooltiptext="Cisco Certified Network Associate Cyber Operations
+    ~$325 exam
+    Retired 2020" tabindex="0" target="_blank" >CCNA CyOps</a>
+                    <a data-entry="retired-56" class="blueopsitem1" href="https://www.paloaltonetworks.com/services/education/certification" tooltiptext="Palo Alto Networks Certified Detection and Remediation Analyst
+    $155 exam
+    Retired 30 Apr 2025" tabindex="0" target="_blank" >PCDRA</a>
+                    <a data-entry="retired-58" class="blueopsitem1" href="https://cybersecurity.isaca.org/csx-certifications/csx-practitioner-certification" tooltiptext="ISACA Cybersecurity Practitioner
+    $549 lab
+    Retired 30 Apr 2023" tabindex="0" target="_blank" >CSX-P</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <!-- Row 20 -->
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-60" class="engineeritem1" href="https://mile2.com/general-security-courses/certified-virtualization-engineer.html" tooltiptext="Mile2 Certified Virtualization Engineer
+    $500 exam
+    Discontinued" tabindex="0" target="_blank" >C)VE</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-59" class="blueopsitemw2" href="https://www.crest-approved.org/certification-careers/crest-certifications/crest-certified-network-intrusion-analyst" tooltiptext="CREST Certified Network Intrusion Analyst
+    $2,481 exam &amp; essay
+    Hands on exam in UK
+    No longer in the CREST exam catalog" tabindex="0" target="_blank" >CREST CCNIA</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <!-- Row 21 -->
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-61" class="softwareitem1" href="https://www.elearnsecurity.com/certification/ewdp" tooltiptext="eLearnSecurity Web Defense Professional
+    $400 exam
+    Retired by INE" tabindex="0" target="_blank" >eWDP</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <!-- Row 22 -->
+                    <div class="spacer"></div>
+                    <a data-entry="retired-62" class="networkitem1" href="https://www.mosse-institute.com/certifications/mnse-network-security-essentials.html" tooltipleft="Mosse Institute Network Security Essentials
+    $450 certification programme
+    100% practical. No expiry.
+    No longer in the Mosse Institute catalog" tabindex="0" target="_blank" >MNSE</a>
+                    <a data-entry="retired-63" class="networkitem1" href="https://www.paloaltonetworks.com/services/education/certification" tooltipleft="Palo Alto Networks Certified Network Security Administrator
+    $155 exam
+    Retired 2025 - replaced by new Palo Alto role certifications" tabindex="0" target="_blank" >PCNSA</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-64" class="testitem1" href="https://schoolofcybersecurity.com/cyber-certified-experts-cce-program/available-certifications/certified-expert-independent-assessor-ceia/" tooltiptext="Lunarline Certified Expert Independent Assessor
+    $350 exam
+    Lunarline certifications discontinued" tabindex="0" target="_blank" >CEIA</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-65" class="redopsitem1" href="http://iacertification.org/cpt_certified_penetration_tester.html" tooltiptext="IACRB Certified Penetration Tester
+    $499 exam
+    Removed 2022 - no longer available" tabindex="0" target="_blank" >CPT</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <!-- Row 23 -->
+                    <div class="spacer"></div>
+                    <a data-entry="retired-66" class="networkitem1" href="https://www.paloaltonetworks.com/services/education/certification#pccsa" tooltipleft="Palo Alto Networks Certified Cybersecurity Associate
+    $100 exam
+    Retired" tabindex="0" target="_blank" >PCCSA</a>
+                    <a data-entry="retired-67" class="networkitem1" href="https://training.fortinet.com/local/staticpage/view.php?page=fca_cybersecurity" tooltipleft="Fortinet Certificed Associate
+    Free course and exam required
+    Replaced by NSE 3 on 15 Jul 2026" tabindex="0" target="_blank" >FCA</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-68" class="engineeritem1" href="https://docs.microsoft.com/en-us/learn/certifications/azure-iot-developer-specialty?wt.mc_id=learningredirect_certs-web-wwl" tooltiptext="Azure IoT Developer Specialty
+    $165 exam
+    Retired by Microsoft" tabindex="0" target="_blank" >AZ-220</a>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-69" class="engineeritem1" href="https://cybersecurity.isaca.org/csx-learning/csx-foundations-series-course-bundle#3-certificate-exams" tooltiptext="ISACA Cybersecurity Technical Foundation
+    $750 three exams
+    Retired" tabindex="0" target="_blank" >CSX-T</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-70" class="blueopsitem1" href="https://www.isaca.org/credentialing/cybersecurity/csx-forensics-analysis-certificate" tooltiptext="ISACA Cybersecurity Packet Analysis Certificate
+    $250 exam
+    Retired" tabindex="0" target="_blank" >CSX-PA</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <!-- Row 24 -->
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-71" class="engineeritem1" href="https://www.mosse-institute.com/certifications/mese-certified-enterprise-security-engineer.html" tooltiptext="Mosse Institute Enterprise Security Engineer
+    $450 exam
+    No longer in the Mosse Institute catalog" tabindex="0" target="_blank" >MESE</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-73" class="blueopsitemw2" href="https://mile2.com/training-options/red-team-vs-blue-team.html" tooltiptext="Mile2 Red vs Blue
+    $400 exam
+    Discontinued" tabindex="0" target="_blank" >Mile2 Red vs Blue</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-72" class="blueopsitem1" href="https://mile2.com/general-security-courses/certified-virtualization-forensics-examiner.html" tooltiptext="Mile2 Certified Virtualization Forensics Examiner
+    $400 exam
+    Discontinued" tabindex="0" target="_blank" >C)VFE</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-73" class="redopsitem1" style="font-size:0.5vmax;" href="https://mile2.com/training-options/red-team-vs-blue-team.html" tooltiptext="Mile2 Red vs Blue
+    $400 exam
+    Discontinued" tabindex="0" target="_blank" >Mile2 Red vs Blue</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <!-- Row 25 -->
+                    <div class="skilllevelitem"><span style="color:var(--greendk)">Beginner</span></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-74" class="mgmtitem1" href="https://www.mosse-institute.com/certifications/mcl-cybersecurity-leadership.html" tooltiptext="Mosse Institute Cybersecurity Leadership
+    $450 exam
+    No longer in the Mosse Institute catalog" tabindex="0" target="_blank" >MCL</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-75" class="redopsitem1" href="https://www.exin.com/certifications/exin-ethical-hacking-foundation-exam" tooltiptext="EXIN Ethical Hacking Foundation
+    $232 exam
+    Withdrawn 31 Dec 2025" tabindex="0" target="_blank" >EEHF</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <!-- Row 26 -->
+                    <div class="spacer"></div>
+                    <a data-entry="retired-76" class="networkitem1" href="https://training.fortinet.com/local/staticpage/view.php?page=fcf_cybersecurity" tooltipleft="Fortinet Certified Fundamentals Cybersecurity
+    Free 3 courses with exams req
+    Replaced by NSE 1 and NSE 2 on 15 Jul 2026" tabindex="0" target="_blank" >FCF</a>
+                    <a data-entry="retired-77" class="networkitem1" href="https://www.paloaltonetworks.com/services/education/certification" tooltipleft="Palo Alto Networks Certified Cybersecurity Entry-level Technician
+    $110 exam
+    Retired 2025 - replaced by new Palo Alto role certifications" tabindex="0" target="_blank" >PCCET</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-78" class="engineeritem1" href="https://www.microsoft.com/en-us/learning/mta-summary-certification.aspx" tooltiptext="Microsoft Technology Associate
+    $80 exam
+    Retired 30 Jun 2021" tabindex="0" target="_blank" >MTA</a>
+                    <a data-entry="retired-79" class="engineeritem1" href="https://mile2.com/general-security-courses/certified-virtualization-principles.html" tooltiptext="Mile2 Certified Virtualization &amp; Cloud Principles
+    $500 exam
+    Discontinued" tabindex="0" target="_blank" >C)VCP</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-80" class="softwareitem1" href="https://www.mosse-institute.com/certifications/mase-certified-application-security-engineer.html" tooltiptext="Mosse Institute Certified Application Security Engineer
+    $450 exam
+    No longer in the Mosse Institute catalog" tabindex="0" target="_blank" >MASE</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <!-- Row 27 -->
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-81" class="engineeritem1" style="font-size:0.5vmax;" href="https://www.comptia.org/certifications/cloud-essentials" tooltiptext="CompTIA Cloud Essentials
+    $138 exam
+    Retired 2025" tabindex="0" target="_blank" >Cloud Essnt</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <a data-entry="retired-82" class="mgmtitem1" href="https://www.mosse-institute.com/certifications/mtcf-technical-cybersecurity-fundamentals.html" tooltiptext="Mosse Institute Technical Cybersecurity Fundamentals
+    Free exam
+    Defunct" tabindex="0" target="_blank" >MTCF</a>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+                    <div class="spacer"></div>
+            </div>
+            </div>
+
+            <!-- Find # of certs by searching for _bl@nk replacing the @ for a -->
+            <div class="key">82 retired certifications | November 2026</div>
+            <div class="key"> <br></div>
+    </div>
+<script>
+/* Price filter. Local only: reads the price already written in each tooltip, converts to approximate USD and dims what is over the limit.
+   An entry listed in several categories is counted once. */
+(function () {
+    var RATES = { '$': 1, 'A$': 0.65, 'C$': 0.73, '\u20ac': 1.08, '\u00a3': 1.27 };
+    var CUR = /(A\$|C\$|\$|\u20ac|\u00a3)\s?([\d,]+(?:\.\d+)?)/;
+    function priceOf(a) {
+        var t = a.getAttribute('tooltiptext') || a.getAttribute('tooltipleft') || a.getAttribute('tooltipright') || '';
+        var body = t.split('\n').slice(1).join(' ');
+        var m = body.match(CUR);
+        if (m) { return parseFloat(m[2].replace(/,/g, '')) * RATES[m[1]]; }
+        if (/\bfree\b/i.test(body)) { return 0; }
+        return null;
+    }
+    var root = document.getElementById('interactive');
+    if (!root) { return; }
+    var items = Array.prototype.slice.call(root.querySelectorAll('.certcontainer a[href]'))
+        .filter(function (a) { return a.textContent.trim() !== 'Programming Language'; })
+        .map(function (a) { return { el: a, price: priceOf(a), key: a.getAttribute('data-entry') || a.textContent.trim() }; });
+    var total = {}; items.forEach(function (i) { total[i.key] = 1; }); total = Object.keys(total).length;
+    var max = document.getElementById('pf-max'), range = document.getElementById('pf-range'), unk = document.getElementById('pf-unknown'), count = document.getElementById('pf-count');
+    var top = 0; items.forEach(function (i) { if (i.price !== null && i.price > top) { top = i.price; } });
+    top = Math.ceil(top / 50) * 50; range.max = top; range.value = top;
+    function apply() {
+        var limit = max.value === '' ? Infinity : parseFloat(max.value), seen = {};
+        items.forEach(function (i) {
+            var hide = i.price === null ? !unk.checked : i.price > limit;
+            i.el.classList.toggle('pricefiltered', hide);
+            if (!hide) { seen[i.key] = 1; }
+        });
+        count.textContent = Object.keys(seen).length + ' of ' + total + ' shown';
+    }
+    max.addEventListener('input', function () { if (max.value !== '') { range.value = Math.min(parseFloat(max.value), top); } apply(); });
+    range.addEventListener('input', function () { max.value = (parseFloat(range.value) >= top) ? '' : range.value; apply(); });
+    unk.addEventListener('change', apply);
+    document.getElementById('pf-reset').addEventListener('click', function () { max.value = ''; range.value = top; unk.checked = true; apply(); });
+    apply();
+})();
+</script>

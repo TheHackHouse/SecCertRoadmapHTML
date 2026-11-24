@@ -1,0 +1,95 @@
+Sites that could not be accessed (or only partly) while researching the roadmap
+==============================================================================
+Compiled November 2026. "Blocked" means the site refused automated requests; a person
+with a browser can usually open these. Entries here are the ones worth a manual check,
+because chart data for these vendors came from search snippets, archives or third parties.
+
+Format: site | what happened | what it affected
+
+--- Refused automated access (HTTP 403 / bot block) ---
+orangecyberdefense.com | 403 on every page | All 9 SensePost courses on the training chart are unverified; no prices
+sensepost.com/training | 404, redirects to Orange Cyberdefense | Same as above
+infosecinstitute.com | 403 | Status of CMWAPT, CRTOP, CREA, CCFE, CMFE, CDRP, CSSA and the retired-certs page not confirmed
+eccouncil.org | 403 on program pages | CEH, CPENT, COASP, ECES, CEH Practical prices taken from store/cert subdomains or snippets; Essentials series not checked
+help.offsec.com (OSMR FAQ) | 403 | OSMR hiatus wording read from a search snippet only
+maldevacademy.com | 403 | MalDev Academy prices from search snippets; EDR course price and any certificate unconfirmed
+anthropic.skilljar.com, anthropic-partners.skilljar.com | 403 | Claude Certified exam prices from search snippets of the partner FAQ
+blackhat.com (training schedules) | 403 | Black Hat prices for SpecterOps, MDSec, SensePost, Red Team Alliance not retrieved
+outflank.nl | 403 | No Outflank course list confirmed
+exodusintel.com (training) | 403 | No course list confirmed
+courses.chainguard.dev | 403 | Chainguard course details from snippets
+university.recordedfuture.com | 403 | Recorded Future course details from snippets
+activecountermeasures.com | 403 | Threat Hunting Level 1 details from snippets
+arcx.io | 403 | Not checked (CREST training provider)
+redteamacademy.com (RedTeam Hacker Academy) | 403 | Not checked
+zeropointsecurity.co.uk old subdomains (courses., training.) | 403 | Old chart links dead; current site works
+
+--- Down, erroring or rate-limited ---
+mdsec.co.uk | HTTP 522 on every attempt | MDSec's 4 courses taken from Wayback Machine captures dated 2026-11-01; no prices
+corelan-training.com | incomplete TLS certificate chain; readable once certificate errors are ignored | Resolved: Corelan classes and CCED details now read from the vendor site
+training.defcon.org | HTTP 429 | DEF CON Training prices (Red Team Alliance, SensePost) from snippets
+shop.redteamalliance.com (regional collection pages) | rate-limited | Europe / Australia session listings not read; main catalog read via products.json
+zero2automated / courses.0ffset.net | unreachable on first attempt, readable later | Beginner course status not confirmed
+nvidia.com DLI course page | timed out | "Exploring Adversarial Machine Learning" price and availability from secondary sources
+GitHub API (api.github.com) | unauthenticated rate limit of 60 requests/hour; gh CLI not logged in | Fork review limited to forks with activity after July 2024
+
+--- Needs JavaScript, a login or a session ---
+cyberwarfare.live | JavaScript-rendered, prices not readable | All CyberWarFare Labs prices are from search snippets or sale pages
+tryhackme.com | JavaScript-rendered, local-currency pricing | TryHackMe exam prices partly from third parties
+learning.antisyphontraining.com | JavaScript-only | Most Antisyphon prices and certificate details unconfirmed
+training.redsiege.com | JavaScript app | Could not enumerate on-demand-only Red Siege courses
+hacktricks-training.com (FAQ) | requires a session | GRTE / AzRTE prices and exam durations not confirmed
+Fortinet help desk article 73000667146 (NSE mapping table) | redirects to a login | Track-by-track FCP/FCSS to NSE mapping not confirmed
+volexity.com (training) | login-gated portal | Malware and Memory Forensics course not added
+dragos.com (Dragos Academy) | on-demand courses behind customer portal | Not added
+crowdstrike.com (CrowdStrike University catalog PDF) | not machine-readable | Course names and prices not confirmed; not added
+cellebrite.com (CCME fee) | behind login | CCME price not confirmed
+xintra.org (FAQ) | certificate answer not visible | Whether XINTRA issues completion certificates not confirmed
+
+--- Page gone or content missing ---
+crest-approved.org old exam URLs (CCHIA, CCNIA, CRTSA, CMRE, CWS) | 404, no retirement notice | Retirement inferred from catalog absence
+mosse-institute.com pages for MCD, MESE, MNSE, MASE, MCL | blank or redirect | Retirement inferred from catalog absence
+exin.com Ethical Hacking Foundation URLs | redirect to homepage | EEHF retirement taken from the Jakobraun fork audit
+kali.training/klcp | 404 | KLCP now under offsec.com PEN-103
+iacertification.org | empty page | IACRB CPT / CEPT current status not confirmed
+social-engineer.com MLSE detail page | 404 | MLSE not added
+hackviser.com/certifications | 404 on first attempt; cert pages readable later | -
+cyber5w.com (CCDFA), leveleffect.com (CDCP) | 404 | Not added
+bcsecurity.io (training) | 404 | Not added
+Guessed training URLs for Quarkslab, Trail of Bits, Bishop Fox, Azeria Labs, Blue Frost Security | 404 or empty | No public catalog confirmed; not added
+cloud.google.com and aws.amazon.com certification index pages | truncated | Absence of an AI-security certification not fully confirmed
+
+--- Prices or details simply not published ---
+INE (ine.com) | voucher prices not shown on certification pages | INE prices from the Jakobraun fork audit or third parties
+8kSec (8ksec.io) | exam prices not published | Tooltips say "Price not published"
+Mandiant Academy | certification exam prices (MCTIA, MIR) and private-course prices not published | Tooltips say so
+Synacktiv, Winsider, Margin Research, Grand Idea Studio, SecuringHardware, Vector 35 | quote-only pricing | Tooltips say so
+
+--- Added during telecom research ---
+gsma.com (GSMA Advance) | 403 | No GSMA security course confirmed either way
+nokia.com/learning and bell-labs.com training pages | 403 / 410 | Nokia Bell Labs "5G Professional Certification - Secured Networks" could not be verified; not added
+wraycastle.com | HTTP 429 | Wray Castle prices conflicting in snippets; one course added with "Price not confirmed"
+shop.binary.ninja (RE//verse training shop) | HTTP 429 | Practical Baseband Exploitation price from a search snippet
+training.defcon.org / sg.shop.defcon.org | HTTP 429 | Matrix Shell 5G, Midnight Blue Red Team SIGINT and VisionSpace S-RAD details from snippets only
+academy.itu.int (telecom security course) | 404 | Not added
+online-training.p1sec.com (catalog page) | JavaScript-rendered, no prices | P1 Security prices on request; one price taken from reseller Mpirical
+sysmocom.de, apistraining.com, taszk.io/trainings | guessed URLs 404 or no training content | No public catalog; not added (TASZK course taken from OffensiveCon listing)
+ringzer0.training and nsec.io 2025 pages for Altaf Shaik's 5G course | 404 | No current dates found; chart entry notes last run 2024-25
+
+--- Added during Attify / notable-gaps research ---
+cobaltstrike.com/training, fortra.com (offensive security training) | 403; datasheet PDF unreadable | Fortra "Cobalt Strike Certified Operator" (CSCO I / II) exam format and price not confirmed; not added
+myosint.training | 403 | My OSINT Training catalog not checked; not added
+updraft.cyfrin.io | HTTP 429 | Cyfrin Smart Contract Security details from search summaries
+attify-store.com (collection page), Attify Stripe checkout links | HTTP 429 / JavaScript | Attify prices taken from the store's product data; OIE price not published
+exodusintel.com/training.html | TLS certificate mismatch | Not added
+academy.dragos.com, dsec.io/training | DNS not found | Not added
+hacksys.io/trainings | empty page | HackSys Windows Kernel Exploitation has no 2026 date; not added
+newae.com (education / training) | 404 | ChipWhisperer course titles not retrieved; not added
+Guessed training URLs for Quarkslab, Duasynt, CodeMachine, Arcanum, Dreadnode | 404 | Arcanum courses read from its Payhip store instead; others not added
+social-engineer.com (FASE product page) | loads but no price, "out of stock" | FASE / PASE not added
+hardwear.io NL 2026 training pages | load, but all classes sold out and prices removed | Chart entries say "price not published"
+offensivecon.org/trainings | 2027 trainings not yet posted | 2026 listings used
+
+--- Added during Corelan / Zero2Automated / RET2 research ---
+www.zero2auto.com | connection timed out; non-www zero2auto.com redirects to 0ffset.net and works | Zero2Automated catalog read from 0ffset.net and its Podia store
+rootedcon.com | loads, but no Corelan 2027 listing yet | RootedCON price for Corelan Heap not confirmed

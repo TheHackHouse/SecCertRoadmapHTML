@@ -1,11 +1,198 @@
-# SecCertRoadmapHTML
-Security Certification Roadmap HTML5/CSS3 version
+# Security Certification Roadmap
 
-This code is embedded inside the html page at https://www.pauljerimy.com/security-certification-roadmap/
+An interactive map of **655 security certifications**, **317 training courses** and **82 retired
+certifications**, placed by security domain and by level from beginner to expert.
 
-I am open to restructing this html if a better way is known. I am a beginner at best when it comes to HTML and CSS.
+- **Live:** [tools.hackhouse.com/roadmap](https://tools.hackhouse.com/roadmap/), in the Reference section of HackHouse Tools
+- **Repository:** [TheHackHouse/SecCertRoadmapHTML](https://github.com/TheHackHouse/SecCertRoadmapHTML)
+- **Offline:** open [`roadmap/standalone.html`](roadmap/standalone.html) in any browser
 
-## Change Log
+This is a continuation of Paul Jerimy's
+[Security Certification Roadmap](https://pauljerimy.com/security-certification-roadmap/), which has
+been the go-to map of security certifications for years. A big thank you to Paul for creating it,
+maintaining it since 2018 and sharing it openly, and to Drackar of techexams.net, whose 2014–2015
+charts it grew from. The original repository has not been updated since mid-2024 and its pull requests
+have been waiting since then, so it appears to have been abandoned. HackHouse has forked it to keep the
+roadmap current. If Paul resumes work on the original, we would be glad to contribute these changes
+back.
+
+**Pull requests are welcome here.** Please open them against
+[TheHackHouse/SecCertRoadmapHTML](https://github.com/TheHackHouse/SecCertRoadmapHTML) rather than the
+original repository. See [Contributing](#contributing) for what helps a change get merged quickly.
+
+Everything is static HTML, CSS and JavaScript. There is no build step and no server-side code, and
+the page loads nothing from any other domain.
+
+## What it shows
+
+| Chart | Contents |
+|---|---|
+| **Certifications** | Exam-based security certifications that can be obtained today |
+| **Training** | Reputable courses that do not end in an exam-based certification: practitioner-led offensive, defensive, hardware, telecom, ICS and physical training |
+| **Retired** | Certifications that can no longer be obtained, each with a note on when or why |
+
+Each chart can be viewed three ways:
+
+- **Cyber View:** every domain side by side, like the classic roadmap.
+- **Domain view:** one domain, such as *Offensive Security Operations*, larger and with every entry at its exact level.
+- **Sub-domain view:** one area, such as *Cloud*, *Malware / RE* or *Physical*.
+
+Columns are domains and their sub-areas; height is level. Hovering or focusing a box shows its full
+name, price and notes, and clicking it opens the provider's page. Clicking a domain or sub-domain
+heading opens that view. The page also has a search box, a maximum-price filter (in US dollars),
+a toggle for entries with no published price, and a list view of the same entries as a table. The
+address bar keeps the current chart and view, e.g. `#chart=training&view=s:EXP`, so any view can be
+bookmarked or shared.
+
+## Domains
+
+| Domain | Sub-domains (columns) |
+|---|---|
+| Communication and Network Security | — |
+| IAM | — |
+| Security Architecture and Engineering | Cloud / SysOps, *nix, ICS / IoT, Architecture |
+| Asset Security | — |
+| Security and Risk Management | Management, GRC |
+| Security Assessment and Testing | — |
+| Software Security | — |
+| Defensive Security Operations | SOC / Threat Intel, Cloud / AI, Malware / RE, Forensics, Incident Handling |
+| Offensive Security Operations | Penetration Testing, Exploitation / RE / Hardware, Cloud, AI, Physical |
+
+An entry that belongs to more than one area appears in each of them. When those areas sit next to
+each other it is drawn as a single bar spanning them (for example, GCIH across Incident Handling and
+Penetration Testing). GSE, CISSP and SecurityX span the first seven domains, and *Programming Language*
+spans the whole chart, because they apply across all of them.
+
+Levels run from 1 (most entry-level) to 26 (most advanced), grouped as Beginner (1–4),
+Intermediate (5–16) and Expert (17–26).
+
+## Repository layout
+
+```
+roadmap/                    The roadmap app (deploy this folder)
+  index.html                HackHouse Tools page (uses the site's theme, nav and footer)
+  standalone.html           Same app with its own styling; runs anywhere, including from disk
+  data/
+    taxonomy.js             Domains, sub-domains, colours, level bands, chart titles
+    certifications.js       One certification per line
+    training.js             One training course per line
+    retired.js              One retired certification per line
+  js/roadmap.js             Validation, layout and rendering
+  css/hackhouse.css         Styling for the HackHouse Tools page
+  css/roadmap.css           Styling for the standalone page
+  README.md                 Data format, editing and deployment details
+
+Security-Certification-Roadmap9.html        Legacy chart pages (see below)
+Security-Certification-Roadmap-Retired.html
+Security-Training-Roadmap.html
+inaccessible-sites.txt      Provider sites that blocked or failed during research, and what each affected
+LICENSE.txt                 CC BY-SA 4.0
+```
+
+## Updating the data
+
+The files in `roadmap/data/` are the source of truth. Each entry is a single line:
+
+```js
+{"id": "oscp", "label": "OSCP", "name": "OffSec Certified Professional (OSCP / OSCP+)", "level": 16,
+ "cats": ["PEN"], "span": 2, "details": ["$1,749 course + exam"], "usd": 1749,
+ "url": "https://www.offsec.com/courses/pen-200/"}
+```
+
+- **To add an entry,** add one line with its level and category ids (`cats`, using the sub-domain ids in `taxonomy.js`). The layout places it automatically; nothing is positioned by hand.
+- **To move an entry,** change its `level` or `cats`.
+- **To retire an entry,** move its line from `certifications.js` to `retired.js` and add a note to `details` saying when and why.
+- **`usd`** is the approximate US-dollar price used by the price filter, or `null` when no price is published.
+
+When the page loads, it checks the data. Missing fields, duplicate ids, unknown categories and
+out-of-range levels are listed in a banner at the top of the page and in the browser console. The
+full field reference is in [`roadmap/README.md`](roadmap/README.md).
+
+### Contributing
+
+Pull requests are welcome at
+[TheHackHouse/SecCertRoadmapHTML](https://github.com/TheHackHouse/SecCertRoadmapHTML/pulls).
+Issues are welcome too, for example to report a retired certification, a new one or a wrong price. Please:
+
+- change only the relevant line(s) in `roadmap/data/`;
+- link the provider's own page for the certification or course, not a reseller or blog;
+- describe the price exactly as the provider publishes it, and note when an exam requires a course or prerequisites;
+- for a retirement, rename or new entry, include a source in the pull request description;
+- open `roadmap/standalone.html` and check that no data-problem banner appears.
+
+The training chart is limited to established, practitioner-led providers. Course marketplaces and
+generic introductory content are left out.
+
+## Deploying
+
+The maintained, live version is at https://tools.hackhouse.com/roadmap/. To host it elsewhere, copy
+the `roadmap/` folder to the web root so the page is served at `/roadmap/`. On tools.hackhouse.com, `index.html` uses the site's `/css/hh-theme.css`, `/js/hh-nav.js`, fonts and
+images. The steps for the home-page tile and the sitemap entry are in
+[`roadmap/README.md`](roadmap/README.md#deploying-to-toolshackhousecom). For any other host, use
+`standalone.html`, which needs nothing outside the folder.
+
+## Legacy pages
+
+`Security-Certification-Roadmap9.html` is the original single-file chart that is embedded at
+[pauljerimy.com](https://pauljerimy.com/security-certification-roadmap/).
+`Security-Certification-Roadmap-Retired.html` and `Security-Training-Roadmap.html` are companion
+pages built in the same format during the November 2026 update.
+
+These pages hold the same data as the November 2026 export but are no longer updated. Future changes
+go into `roadmap/data/` only.
+
+## Methodology and sources
+
+- **Checked against providers.** Certifications and courses were checked against each provider's current catalogue in November 2026. Where a provider's site blocked automated access, the information came from conference listings, archived pages or search results instead; those cases are listed in `inaccessible-sites.txt` and are worth a manual check.
+- **Prices and filtering.** Prices are as published, in the provider's currency. They are converted to US dollars at fixed approximate rates only for the price filter. Where the price shown includes prerequisite exams or mandatory fees, the tooltip says so.
+- **Levels** follow the original roadmap's placements, adjusted where entries were added or re-categorised.
+- **Categories** were reviewed for every entry in November 2026; for example, GREM sits in Malware / RE and threat-intelligence certifications sit in SOC / Threat Intel.
+- **Data from forks.** Data from community forks (Jakobraun, hevertydourado, G1rdo, N1ckw1ck, JaimePolop) was merged where it could be confirmed.
+
+## Credits and licence
+
+Created and maintained from 2018 to 2024 by [Paul Jerimy](https://pauljerimy.com/), building on
+earlier charts by Drackar of techexams.net (2014–2015). Thank you both: this roadmap exists because of
+your work. The November 2026 data-driven rewrite, the training
+and retired charts, the Offensive/Defensive split and the re-categorisation were done for
+[HackHouse](https://www.hackhouse.com/). Thanks to everyone credited in the change log below for
+corrections and additions.
+
+Licensed under [Creative Commons Attribution-ShareAlike 4.0](LICENSE.txt). You may share and adapt
+the roadmap, including commercially, provided you credit the source and share your version under the
+same licence.
+
+## Change log
+
+### November 2026
+**New app**
+- Rewrote the roadmap as a data-driven static app in `roadmap/`. It has a Cyber View plus domain and sub-domain views, search, a price filter with a no-published-price toggle, a list view, shareable URLs and data validation. Each view is one CSS grid, so borders, shading and entries always line up.
+- Added a HackHouse Tools edition (`roadmap/index.html`) and a standalone edition (`roadmap/standalone.html`).
+
+**Structure**
+- Split Security Operations into **Defensive** (SOC / Threat Intel, Cloud / AI, Malware / RE, Forensics, Incident Handling) and **Offensive** (Penetration Testing, Exploitation / RE / Hardware, Cloud, AI, Physical).
+- Added sub-domain titles to Security Architecture and Engineering (Cloud / SysOps, *nix, ICS / IoT, Architecture) and to Security and Risk Management (Management, GRC).
+- Re-checked the category of every entry; about 180 certifications and 70 courses moved (for example GREM to Malware / RE, and threat-intelligence certifications to SOC / Threat Intel). Entries can now appear in several categories.
+- Made GSE, CISSP and SecurityX bars across the first seven domains and *Programming Language* a bar across the whole chart.
+
+**New charts**
+- Added a **Training** chart: 317 courses from providers including SpecterOps, MDSec, Zero-Point Security, Sektor7, MalDev Academy, Corelan, RET2, Zero2Automated, Signal Labs, OpenSecurityTraining2, Zero Day Engineering, Winsider, TrainSec, Synacktiv, Antisyphon, XINTRA, Mandiant Academy, Red Siege, Orange Cyberdefense / SensePost, Mossé, Red Team Alliance, Attify, Raelize, Penthertz, P1 Security, SANS courses without a GIAC exam, CISA / Idaho National Lab and SEI / CERT.
+- Added a **Retired** chart: 82 certifications recovered from this repository's history and from current audits, each with a retirement note.
+
+**Certifications**
+- Added Cloud and AI / Cyber areas with about 60 new certifications, including OSAI, HTB COAE, GOAA, GAIPS, AAISM, AIGP, SecAI+, CARTP, CARTE, Pwned Labs, CloudBreach, HackTricks and White Knight Labs cloud certifications.
+- Added over 100 penetration testing, exploitation and defensive certifications: HTB CAPE/CWPE/CDEP, Altered Security CRTP/CRTE/CETP, TCM, TryHackMe, The SecOps Group, CyberWarFare Labs, White Knight Labs, 8kSec, OffSec OSTH/OSIR, the GIAC GX series, 13Cubed, Cellebrite and more.
+- Added RTA CEA (physical covert entry), Mandiant MCTIA and MIR, ACIP, and Fortinet's NSE 1–8 scheme, which replaced FCF/FCA/FCP/FCSS/FCX on 15 July 2026.
+- Removed or retired certifications that are no longer obtainable, including OSMR, MCD, S-EHE, EEHF, CREST CCHIA/CCNIA/CRTSA, the Palo Alto PCxx series, the NCSC CCP levels, and the GIAC certifications in abeyance.
+- Applied renames, including CREST CCRTM/CCRTS, CRTM (formerly PACES), CRTL, HTB CWES, PMRP, CCDL2, SC-401, SC-500, MS-102, SecurityX, the Cisco CCNA/CCNP Cybersecurity and Automation tracks, and the VMware VCF certifications.
+- Corrected prices and links: GIAC (PR #190), OffSec, CREST, The SecOps Group, INE, SECO (now DNV), Zero-Point, Cyber Scheme, Mossé, TCM and Mile2, plus about 85 prices from the Jakobraun audit.
+- Merged pull requests #132, #157, #166, #170, #186 and #190, and data from the Jakobraun, hevertydourado, G1rdo, N1ckw1ck and JaimePolop forks.
+- Fixed the GCIH and GCUX titles.
+
+**Legacy pages**
+- Added the companion `Security-Certification-Roadmap-Retired.html` and `Security-Training-Roadmap.html` pages and a price filter on all three legacy pages.
+- Removed the narrow-screen fallback that replaced the chart with a 2022 image.
+- Fixed alignment of boxes, borders and shading at all window sizes.
 
 ### July 2024:
 - Added GIAC certifications: GRTP, GEIR, GX-FA, GX-PT, GMLE
@@ -106,7 +293,7 @@ I am open to restructing this html if a better way is known. I am a beginner at 
 - Corrected SANS certification prices from $849 to $949
 - Corrected Offensive Security prices to $1499 except OSWE to $1649
 - Other link and price fixes that I lost track of because I accidently closed this readme without saving
- 
+
 ### April 2022:
 - Added Fair Institute certification: Fair Fdn
 - Added Dark Vortex certifications: DV MoS, DV RTOS, DV OTD, DV AOPH, and DV MILF
