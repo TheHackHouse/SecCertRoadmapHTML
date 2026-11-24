@@ -51,10 +51,13 @@ HackHouse Tools page and needs the site's theme files, so it only looks right on
 - **View:** *Cyber View* shows every domain. Picking a domain (e.g. *Offensive Security Operations*)
   or a sub-domain (e.g. *Cloud*) shows just that vertical, larger, with every entry at its exact level.
   Clicking a domain or sub-domain title in the chart does the same.
-- **Size:** *Fit to window* squeezes the Cyber View onto one screen; *Large* keeps the text readable
-  and scrolls sideways.
+- **Size:** *Fit to window* squeezes the Cyber View onto one screen width, and a domain or sub-domain
+  view onto one screen in both directions; *Large* (58 px columns, about 13 px text) and *Extra large*
+  (77 px columns, about 17 px text) keep the labels readable on big or high-DPI
+  screens and scroll sideways.
 - **Filters:** search text, a maximum price (USD) and whether to include entries with no published
-  price. Filtered-out entries are dimmed rather than removed, so the layout stays put.
+  price. Filtered-out entries are dimmed rather than removed, so the layout stays put. *Reset* puts the
+  whole page back to its defaults: certifications chart, Cyber View, fit size, no filters.
 - **List view** under the chart shows the same entries as a table (open by default in domain views).
 - The address bar keeps the current chart and view (`#chart=training&view=s:EXP`), so views can be
   bookmarked and shared.

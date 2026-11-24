@@ -17,12 +17,14 @@
             <label>Chart <select id="rm-chart"></select></label>
             <label>View <select id="rm-view"></select></label>
             <button type="button" id="rm-back" hidden>&larr; Cyber View</button>
-            <label>Size <select id="rm-size"><option value="fit">Fit to window</option><option value="large">Large (scroll)</option></select></label>
+            <label>Size <select id="rm-size"><option value="fit">Fit to window</option><option value="large">Large (scroll)</option><option value="xl">Extra large (scroll)</option></select></label>
             <label>Search <input type="search" id="rm-search" placeholder="name, vendor, topic"></label>
+        </div>
+        <div class="rm-controls">
             <label>Max price (USD) <input type="number" id="rm-max" min="0" step="50" placeholder="any"></label>
             <input type="range" id="rm-range" min="0" max="10000" step="50" aria-label="Maximum price">
             <label><input type="checkbox" id="rm-unknown" checked> Include entries with no published price</label>
-            <button type="button" id="rm-reset">Reset filters</button>
+            <button type="button" id="rm-reset">Reset</button>
             <span id="rm-count" aria-live="polite"></span>
         </div>
     </header>

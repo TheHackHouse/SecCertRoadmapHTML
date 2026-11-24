@@ -19,6 +19,9 @@
 /* the site styles every button as inline-block, which would override the hidden attribute */
 .rm-page [hidden] { display: none !important; }
 
+/* the intro runs the full width of the panel below it, not the theme's 700px measure */
+.rm-page .hh-lede { max-width: none; }
+
 /* ---------- explanation panel (matches the Example Hashes page) ---------- */
 .rm-page .meta {
     background: var(--hh-card); border: 1px solid var(--hh-border);
@@ -56,6 +59,10 @@
     font-family: var(--font-mono); font-size: .68rem; letter-spacing: .08em;
     text-transform: uppercase; color: var(--text-muted); padding-bottom: .7rem;
 }
+
+.rm-page .controls-price { margin-top: -.15rem; padding-top: .9rem; border-top: 1px solid var(--line); }
+
+.rm-page .rm-sources { margin-top: 1.5rem; margin-bottom: 0; }
 
 /* chart tabs */
 .rm-page .rm-tabs { display: inline-flex; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }

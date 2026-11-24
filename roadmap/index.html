@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <title>Security Certification Roadmap | HackHouse Tools</title>
-  <meta name="description" content="655 security certifications and 317 training courses mapped by domain and level, from network and GRC to penetration testing, exploitation, cloud, AI and physical security. Filter by price, search, or focus on one area.">
+  <meta name="description" content="Every security certification and training course we know of on one chart, by subject and difficulty. Search it, filter by price, or look at one area at a time. Open source, pull requests welcome.">
   <meta name="robots" content="index, follow, max-image-preview:large">
   <link rel="canonical" href="https://tools.hackhouse.com/roadmap/">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="/css/hh-theme.css?v=707827f6">
-  <link rel="stylesheet" href="css/hackhouse.css">
+  <link rel="stylesheet" href="css/hackhouse.css?v=c223ec10">
   <link rel="icon" href="/images/favicon.ico" sizes="16x16 32x32 48x48">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png">
   <link rel="icon" type="image/png" sizes="192x192" href="/images/icon-192.png">
@@ -18,14 +18,14 @@
   <meta property="og:locale" content="en_AU">
   <meta property="og:url" content="https://tools.hackhouse.com/roadmap/">
   <meta property="og:title" content="Security Certification Roadmap | HackHouse Tools">
-  <meta property="og:description" content="655 security certifications and 317 training courses mapped by domain and level, from network and GRC to penetration testing, exploitation, cloud, AI and physical security. Filter by price, search, or focus on one area.">
+  <meta property="og:description" content="Every security certification and training course we know of on one chart, by subject and difficulty. Search it, filter by price, or look at one area at a time. Open source, pull requests welcome.">
   <meta property="og:image" content="https://tools.hackhouse.com/images/og-hackhouse.jpg">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="HackHouse logo on a dark background">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Security Certification Roadmap | HackHouse Tools">
-  <meta name="twitter:description" content="655 security certifications and 317 training courses mapped by domain and level, from network and GRC to penetration testing, exploitation, cloud, AI and physical security. Filter by price, search, or focus on one area.">
+  <meta name="twitter:description" content="Every security certification and training course we know of on one chart, by subject and difficulty. Search it, filter by price, or look at one area at a time. Open source, pull requests welcome.">
   <meta name="twitter:image" content="https://tools.hackhouse.com/images/og-hackhouse.jpg">
   <script type="application/ld+json">
 {
@@ -42,7 +42,7 @@
       "@type": "Dataset",
       "name": "Security Certification Roadmap",
       "url": "https://tools.hackhouse.com/roadmap/",
-      "description": "655 security certifications and 317 training courses mapped by domain and level, from network and GRC to penetration testing, exploitation, cloud, AI and physical security. Filter by price, search, or focus on one area.",
+      "description": "Every security certification and training course we know of on one chart, by subject and difficulty. Search it, filter by price, or look at one area at a time. Open source, pull requests welcome.",
       "keywords": [
         "security certifications",
         "cybersecurity certification roadmap",
@@ -60,6 +60,7 @@
       "isAccessibleForFree": true,
       "license": "https://creativecommons.org/licenses/by-sa/4.0/",
       "isBasedOn": "https://github.com/PaulJerimy/SecCertRoadmapHTML",
+      "sameAs": "https://github.com/TheHackHouse/SecCertRoadmapHTML",
       "creator": {
         "@id": "https://hackhouse.com/#org"
       },
@@ -100,15 +101,15 @@
 <main class="hh-main hh-wide" id="main-content">
   <span class="hh-eyebrow">Reference</span>
   <h1 id="rm-title" data-static>Security Certification Roadmap</h1>
-  <p class="hh-lede"><span data-count="certifications">655</span> security certifications and <span data-count="training">317</span> training courses, placed by domain and by level from
-     beginner to expert. Open the Cyber View for everything at once, or focus on one domain such as
-     Offensive Security Operations, or on one area such as Cloud or Physical.</p>
+  <p class="hh-lede">Every security certification and training course we know of, on one chart. Columns are
+     subjects, height is difficulty. Search it, filter it by price, or pick one area and look at that alone.
+     Last updated November 2026.</p>
 
   <div class="meta">
-    <p><strong>Reading the chart.</strong> Columns are security domains and their sub-areas; height is level,
-       from beginner at the bottom to expert at the top. An entry that belongs to several areas appears in each,
-       or as one bar across neighbouring areas. Hover or focus a box for the full name, price and notes; click it
-       to open the provider's page. Click a domain or sub-area heading to focus on it.</p>
+    <p><strong>Reading the chart.</strong> Beginner is at the bottom, expert at the top. A cert that fits more than
+       one area is shown in each of them, or as a bar across neighbours. Hover a box for the full name, price and
+       notes; click it to go to the provider. Click a heading to zoom in on that area. <strong>Large</strong> and
+       <strong>Extra large</strong> under Size make the labels readable without zooming the page.</p>
     <ul class="legend" aria-label="Domain colours">
       <li><span class="sw" style="background:var(--d-green)"></span>Network</li>
       <li><span class="sw" style="background:var(--d-teal)"></span>IAM</li>
@@ -123,22 +124,19 @@
     <p><strong>Training</strong> lists reputable courses that do not end in an exam-based certification;
        <strong>Retired</strong> lists certifications that can no longer be obtained. Prices are as published by
        each provider and are converted to approximate US dollars only for the price filter.</p>
-    <p><strong>Sources.</strong> Based on Paul Jerimy's
-       <a href="https://github.com/PaulJerimy/SecCertRoadmapHTML" rel="noopener">Security Certification Roadmap</a>,
-       extended and re-categorised by HackHouse, and shared under the same
-       <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener">CC BY-SA 4.0</a> licence.
-       Everything runs in your browser and loads nothing from any other domain.</p>
   </div>
 
   <div class="controls">
     <div class="lbl">Chart <span id="rm-chart" class="rm-tabs" role="group" aria-label="Chart"></span></div>
     <label>View <select id="rm-view"></select></label>
-    <label>Size <select id="rm-size"><option value="fit">Fit to window</option><option value="large">Large</option></select></label>
+    <label>Size <select id="rm-size"><option value="fit">Fit to window</option><option value="large">Large</option><option value="xl">Extra large</option></select></label>
     <label>Search <input type="search" id="rm-search" placeholder="Name, vendor or topic&hellip;"></label>
+  </div>
+  <div class="controls controls-price">
     <label>Max price (USD) <input type="number" id="rm-max" min="0" step="50" placeholder="Any"></label>
     <input type="range" id="rm-range" min="0" max="10000" step="50" aria-label="Maximum price">
     <label class="inline"><input type="checkbox" id="rm-unknown" checked>Include unpriced</label>
-    <button type="button" id="rm-reset">Reset</button>
+    <button type="button" id="rm-reset" title="Back to the default chart, view, size and filters">Reset</button>
     <span id="rm-count" aria-live="polite"></span>
   </div>
 
@@ -152,7 +150,7 @@
   <div id="rm-wrap"><div id="rm-grid" class="rm-grid"></div></div>
   <div class="rm-foot">
     <span id="rm-footer-count"></span>
-    <span>Use <strong>Large</strong> to read every label in the Cyber View, or pick a domain from <strong>View</strong>.</span>
+    <span>Use <strong>Large</strong> or <strong>Extra large</strong> to read every label in the Cyber View, or pick a domain from <strong>View</strong>.</span>
   </div>
 
   <details id="rm-list">
@@ -162,6 +160,16 @@
       <tbody id="rm-list-body"></tbody>
     </table>
   </details>
+
+  <div class="meta rm-sources">
+    <p><strong>Sources.</strong> Started from Paul Jerimy's
+       <a href="https://github.com/PaulJerimy/SecCertRoadmapHTML" rel="noopener">Security Certification Roadmap</a>,
+       extended and re-sorted by HackHouse, and shared under the same
+       <a href="https://creativecommons.org/licenses/by-sa/4.0/" rel="noopener">CC BY-SA 4.0</a> licence.
+       Missing a cert, or spotted a wrong price or level? Open a pull request or an issue at
+       <a href="https://github.com/TheHackHouse/SecCertRoadmapHTML" rel="noopener">github.com/TheHackHouse/SecCertRoadmapHTML</a>.
+       Everything runs in your browser; nothing is loaded from any other domain.</p>
+  </div>
 </main>
 
 <footer class="hh-footer">
@@ -236,11 +244,11 @@
 </footer>
 <div id="rm-tip" role="tooltip" hidden></div>
 
-<script src="data/taxonomy.js"></script>
-<script src="data/certifications.js"></script>
-<script src="data/training.js"></script>
-<script src="data/retired.js"></script>
-<script src="js/roadmap.js"></script>
+<script src="data/taxonomy.js?v=e02ace2f"></script>
+<script src="data/certifications.js?v=87dd2db7"></script>
+<script src="data/training.js?v=7c18c236"></script>
+<script src="data/retired.js?v=c4fd320a"></script>
+<script src="js/roadmap.js?v=22691175"></script>
 <script src="/js/hh-nav.js?v=23aaf17a"></script>
 </body>
 </html>

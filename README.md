@@ -165,6 +165,14 @@ same licence.
 ## Change log
 
 ### November 2026
+
+**Page, 24 November**
+- *Fit to window* now fits a domain or sub-domain view to the screen vertically as well as horizontally, and re-fits when the window is resized.
+- *Large* and *Extra large* sizes use fixed column widths (58 px and 77 px) so labels stay readable on high-DPI screens; the old *Large* was a clamp that wide screens had already hit.
+- The price filters sit on their own row under the chart, view, size and search controls.
+- *Reset* returns the whole page to its defaults (certifications, Cyber View, fit, no filters), not just the filters.
+- Plainer introduction, the Sources panel moved below the list view, and a note of the last update date.
+- Asset links carry content hashes so a cached copy of the script is never served after a change.
 **New app**
 - Rewrote the roadmap as a data-driven static app in `roadmap/`. It has a Cyber View plus domain and sub-domain views, search, a price filter with a no-published-price toggle, a list view, shareable URLs and data validation. Each view is one CSS grid, so borders, shading and entries always line up.
 - Added a HackHouse Tools edition (`roadmap/index.html`) and a standalone edition (`roadmap/standalone.html`).

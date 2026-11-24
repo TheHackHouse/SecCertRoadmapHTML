@@ -16,11 +16,12 @@
     var T = D.taxonomy;
     var LEVELS = T.levels.count;   // number of level rows (26)
     var HEAD = 2;                  // grid rows above the levels: domain titles, sub-domain titles
+    var HEAD_H = 1.5 + 0.8;        // their heights in units of --row (--h1 and --h2 in the stylesheet)
     var MAX_DRIFT = 2;             // Cyber View: an entry may sit at most this many rows from its level
     var SCOPED_DRIFT = 0;          // domain / sub-domain views have room to place every entry exactly
     var MAX_WIDTH = 16;            // never widen one sub-domain beyond this many columns
     var BRIDGE_MAX = 7;            // widest bar used to join adjacent categories
-    var SIZES = { fit: [16, 80], large: [40, 80] };   // px limits for one column
+    var SIZES = { fit: [16, 80], large: [58, 58], xl: [77, 77] };   // px limits for one column; Large and Extra large are fixed (about 13 px and 17 px labels)
 
     // ---------- taxonomy lookups ----------
     var SUB = {}, DOM = {};
@@ -320,6 +321,15 @@
         var cg = 2, avail = wrap.clientWidth - 24;
         var col = (avail - 30 - (n + g + 1) * cg) / (n + 0.3 * g);
         var lim = SIZES[state.size] || SIZES.fit;
+        if (state.size === 'fit' && state.view !== 'all') {
+            // Domain and sub-domain views also fit vertically: the whole chart, title rows included,
+            // must sit inside the viewport below the sticky nav, with the wrap's own padding.
+            var nav = document.querySelector('.hh-nav');
+            var availH = window.innerHeight - (nav ? nav.offsetHeight : 0) - 56;
+            var rows = HEAD_H + LEVELS + 0.08 * (HEAD + LEVELS - 1);   // in units of --row
+            var colH = (availH / rows) / 0.62;                        // --row is 0.62 * --col
+            col = Math.min(col, colH);
+        }
         col = Math.max(lim[0], Math.min(lim[1], col));
         grid.style.setProperty('--col', col.toFixed(2) + 'px');
         grid.style.setProperty('--gap', (col * 0.3).toFixed(2) + 'px');
@@ -454,9 +464,14 @@
         el('rm-unknown').addEventListener('change', function (ev) { state.unknown = ev.target.checked; applyFilters(); });
         el('rm-size').addEventListener('change', function (ev) { state.size = ev.target.value; resize(); });
         el('rm-reset').addEventListener('click', function () {
+            // back to the page as first loaded: default chart, Cyber View, fit size, no filters
+            state.chart = 'certifications'; state.view = 'all'; state.size = 'fit';
             state.q = ''; state.max = ''; state.unknown = true;
+            if (isSelect) cs.value = state.chart;
+            syncChart(); vs.value = state.view; el('rm-size').value = state.size;
             el('rm-search').value = ''; el('rm-max').value = ''; el('rm-unknown').checked = true;
-            setupRange(); applyFilters();
+            writeHash(); render();   // render() re-runs setupRange, resize and applyFilters
+            window.scrollTo(0, 0);
         });
         var grid = el('rm-grid');
         grid.addEventListener('click', function (ev) {
@@ -471,7 +486,7 @@
         window.addEventListener('scroll', hideTip, { passive: true });
         window.addEventListener('hashchange', function () { readHash(); syncChart(); vs.value = state.view; render(); });
         if (window.ResizeObserver) new ResizeObserver(resize).observe(el('rm-wrap'));
-        else window.addEventListener('resize', resize);
+        window.addEventListener('resize', resize);   // the observer sees width changes only; vertical fit needs the window height too
     }
 
     function init() {
