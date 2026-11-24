@@ -34,6 +34,12 @@
 
     var el = function (id) { return document.getElementById(id); };
     var state = { chart: 'certifications', view: 'all', q: '', max: '', unknown: true, size: 'fit' };
+    // Touch screens have no hover, so a box's details cannot be shown by pointing at it. There, the
+    // first tap on a box shows its details and the second tap (or the link in the details) opens the
+    // provider's page; tapping anywhere else closes the details. Mouse and keyboard use is unchanged.
+    var touchUI = !!(window.matchMedia && window.matchMedia('(hover: none)').matches);
+    var armed = null;   // the box whose details are open on a touch screen
+    function defaultSize() { return (touchUI && window.innerWidth <= 980) ? 'large' : 'fit'; }
     var current = null;            // last rendered layout
 
     // ---------- validation (shown to maintainers) ----------
@@ -384,6 +390,12 @@
         (e.details || []).forEach(function (t) { tip.appendChild(div('', '', t)); });
         var cats = e.bar ? 'All domains' : unique((e.cats || []).map(function (k) { return SUB[k] ? (SUB[k].sub.name || SUB[k].dom.name) : k; })).join(', ');
         tip.appendChild(div('rm-tip-meta', '', bandFor(e.level) + ' · ' + cats));
+        if (touchUI) {
+            var o = document.createElement('a'); o.className = 'rm-tip-open';
+            if (e.url) { o.href = e.url; o.target = '_blank'; o.rel = 'noopener'; o.textContent = 'Open the provider\'s page'; }
+            else o.textContent = 'No link for this entry';
+            tip.appendChild(o);
+        }
         tip.hidden = false;
         var r = a.getBoundingClientRect(), tw = tip.offsetWidth, th = tip.offsetHeight;
         var x = Math.min(Math.max(8, r.left + r.width / 2 - tw / 2), window.innerWidth - tw - 8);
@@ -393,6 +405,7 @@
         Array.prototype.forEach.call(document.querySelectorAll('.rm-item[data-id="' + e.id + '"]'), function (x) { x.classList.add('rm-same'); });
     }
     function hideTip() {
+        armed = null;
         el('rm-tip').hidden = true;
         Array.prototype.forEach.call(document.querySelectorAll('.rm-same'), function (x) { x.classList.remove('rm-same'); });
     }
@@ -465,7 +478,7 @@
         el('rm-size').addEventListener('change', function (ev) { state.size = ev.target.value; resize(); });
         el('rm-reset').addEventListener('click', function () {
             // back to the page as first loaded: default chart, Cyber View, fit size, no filters
-            state.chart = 'certifications'; state.view = 'all'; state.size = 'fit';
+            state.chart = 'certifications'; state.view = 'all'; state.size = defaultSize();
             state.q = ''; state.max = ''; state.unknown = true;
             if (isSelect) cs.value = state.chart;
             syncChart(); vs.value = state.view; el('rm-size').value = state.size;
@@ -476,14 +489,23 @@
         var grid = el('rm-grid');
         grid.addEventListener('click', function (ev) {
             var t = ev.target.closest('[data-view]');
-            if (t) go(t.getAttribute('data-view'));
+            if (t) { go(t.getAttribute('data-view')); return; }
+            var a = ev.target.closest('.rm-item');
+            if (!a) return;
+            if (!a._entry.url) { ev.preventDefault(); if (touchUI) { armed = a; showTip(a); } return; }
+            if (touchUI && armed !== a) { ev.preventDefault(); armed = a; showTip(a); }   // first tap: details; second tap: the link
         });
-        grid.addEventListener('mouseover', function (ev) { var a = ev.target.closest('.rm-item'); if (a) showTip(a); });
-        grid.addEventListener('mouseout', function (ev) { if (ev.target.closest('.rm-item')) hideTip(); });
+        if (!touchUI) {
+            grid.addEventListener('mouseover', function (ev) { var a = ev.target.closest('.rm-item'); if (a) showTip(a); });
+            grid.addEventListener('mouseout', function (ev) { if (ev.target.closest('.rm-item')) hideTip(); });
+        }
+        document.addEventListener('click', function (ev) {
+            if (touchUI && !ev.target.closest('.rm-item') && !ev.target.closest('#rm-tip')) hideTip();
+        });
         grid.addEventListener('focusin', function (ev) { var a = ev.target.closest('.rm-item'); if (a) showTip(a); });
-        grid.addEventListener('focusout', hideTip);
+        grid.addEventListener('focusout', function () { if (!touchUI) hideTip(); });   // on a phone focus moves to the details' link before its tap lands
         document.addEventListener('keydown', function (ev) { if (ev.key === 'Escape') hideTip(); });
-        window.addEventListener('scroll', hideTip, { passive: true });
+        window.addEventListener('scroll', function () { if (!touchUI) hideTip(); }, { passive: true });   // on a phone the details stay open while scrolling to read them
         window.addEventListener('hashchange', function () { readHash(); syncChart(); vs.value = state.view; render(); });
         if (window.ResizeObserver) new ResizeObserver(resize).observe(el('rm-wrap'));
         window.addEventListener('resize', resize);   // the observer sees width changes only; vertical fit needs the window height too
@@ -502,7 +524,9 @@
             if (Array.isArray(list)) n.textContent = list.filter(function (e) { return e.kind !== 'recommendation'; }).length;
         });
         readHash();
+        state.size = defaultSize();
         buildControls();
+        el('rm-size').value = state.size;
         writeHash();
         render();
     }

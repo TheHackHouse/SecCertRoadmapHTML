@@ -172,6 +172,12 @@
     font-family: var(--font-body); font-size: .82rem; line-height: 1.45;
     pointer-events: none; box-shadow: 0 8px 24px rgba(0, 0, 0, .5);
 }
+#rm-tip .rm-tip-open { display: block; margin-top: .5rem; color: var(--lime); font-weight: 600; text-decoration: underline; }
+/* on touch screens the details are tapped, not hovered: let them take taps and fit the screen */
+@media (hover: none) {
+    #rm-tip { pointer-events: auto; max-width: calc(100vw - 16px); }
+    .rm-page .rm-tip-open { padding: .35rem 0; }
+}
 #rm-tip strong { display: block; margin-bottom: .25rem; color: var(--text); font-weight: 600; }
 #rm-tip .rm-tip-meta { margin-top: .35rem; font-family: var(--font-mono); font-size: .62rem; letter-spacing: .1em; text-transform: uppercase; color: var(--accent-text); }
 
