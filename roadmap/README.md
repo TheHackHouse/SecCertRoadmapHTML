@@ -96,7 +96,7 @@ Each entry is one line in the relevant data file:
 | `level` | yes | 1 (most entry-level) to 26 (most advanced). Bands: Beginner 1–4, Intermediate 5–16, Expert 17–26 |
 | `cats` | yes* | One or more sub-domain ids from `taxonomy.js`, e.g. `["MAL"]` or `["IH", "PEN"]` |
 | `bar` | yes* | Instead of `cats`: `"all"` for a bar across the whole chart, or `["network", "software"]` for a bar across that range of domains |
-| `span` | no | Draw the box this many columns wide (single-category entries only) |
+| `span` | no | Draw the box this many columns wide (single-category entries only). Used as `2` to mark broad, generalist certifications within their area; a cert that genuinely covers several areas uses `cats` or `bar` instead |
 | `details` | no | Extra tooltip lines: price, prerequisites, notes |
 | `usd` | no | Price in US dollars used by the price filter; `null` means no published price |
 | `url` | no | Link opened when the box is clicked |
