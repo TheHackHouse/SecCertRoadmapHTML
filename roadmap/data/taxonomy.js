@@ -254,7 +254,7 @@ window.ROADMAP_DATA.taxonomy = {
         {
           "id": "EXP",
           "name": "Exploitation / RE / Hardware",
-          "minCols": 6
+          "minCols": 2
         },
         {
           "id": "OFF_CLOUD",
@@ -269,7 +269,7 @@ window.ROADMAP_DATA.taxonomy = {
         {
           "id": "PHY",
           "name": "Physical",
-          "minCols": 2
+          "minCols": 1
         }
       ]
     }
