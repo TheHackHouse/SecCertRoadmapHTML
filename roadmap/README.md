@@ -18,7 +18,7 @@ anywhere else (it needs nothing from the site).
    ```html
    <a class="hh-tile" href="/roadmap/">
      <span class="hh-tile-tag">Certifications</span>
-     <div class="hh-tile-name">Security Certification Roadmap</div>
+     <div class="hh-tile-name">Cyber Security Certifications Map 2026</div>
      <div class="hh-tile-desc">728 certifications and 318 training courses mapped by domain and level, with offensive, defensive and per-area views.</div>
    </a>
    ```

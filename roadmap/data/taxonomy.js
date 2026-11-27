@@ -29,7 +29,7 @@ window.ROADMAP_DATA.taxonomy = {
     {
       "id": "certifications",
       "tab": "Certifications",
-      "title": "Security Certification Roadmap",
+      "title": "Cyber Security Certifications Map 2026",
       "noun": "certifications",
       "note": ""
     },
