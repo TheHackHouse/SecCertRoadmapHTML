@@ -111,9 +111,11 @@ An entry in several categories appears in each of them. When its categories sit 
 
 Each view is a single CSS grid: one column per sub-domain column, a narrow gap column between
 domains, and one row per level. Borders, shading and entries are all items in that grid, so they
-cannot fall out of alignment. The script starts each sub-domain at its `minCols` from `taxonomy.js`
-and widens it until every entry fits within two rows of its level in the Cyber View (exactly at its
-level in domain views). Adding entries therefore never needs manual positioning.
+cannot fall out of alignment. On the Certifications chart the script starts each sub-domain at its
+`minCols` from `taxonomy.js`; on the Training and Retired charts every sub-domain starts at one
+column, since those charts have far fewer entries in some areas. It then widens a column until every
+entry fits within two rows of its level in the Cyber View (exactly at its level in domain views), so
+no chart carries empty columns and adding entries never needs manual positioning.
 
 ## Checking the data
 

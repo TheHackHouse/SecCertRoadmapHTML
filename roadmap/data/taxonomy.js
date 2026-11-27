@@ -1,5 +1,6 @@
 /* Taxonomy: domains, sub-domains (the columns), colours and level bands.
-   Every entry's "cats" must use the sub-domain ids below. minCols is the starting width;
+   Every entry's "cats" must use the sub-domain ids below. minCols is the starting width on the
+   Certifications chart; the Training and Retired charts start every column at 1. On every chart
    the renderer widens a column automatically when it gets crowded. */
 window.ROADMAP_DATA = window.ROADMAP_DATA || {};
 window.ROADMAP_DATA.taxonomy = {

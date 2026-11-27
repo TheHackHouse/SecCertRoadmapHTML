@@ -193,8 +193,12 @@
     }
 
     function layout(chart, scope) {
-        var widths = {};
-        scope.domains.forEach(function (sd) { sd.subs.forEach(function (s) { widths[s.id] = s.minCols || 1; }); });
+        // minCols in the taxonomy is tuned for the Certifications chart. The other charts have far
+        // fewer entries in some areas, so they start every sub-domain at one column and rely on the
+        // widening loop below, which adds a column only where entries would otherwise sit too far
+        // from their level. That keeps the Training and Retired charts free of empty columns.
+        var useMin = chart === 'certifications', widths = {};
+        scope.domains.forEach(function (sd) { sd.subs.forEach(function (s) { widths[s.id] = useMin ? (s.minCols || 1) : 1; }); });
         var items = entriesIn(chart, scope), res;
         var drift = scope.domains.length > 1 ? MAX_DRIFT : SCOPED_DRIFT;
         for (var n = 0; n < 80; n++) {
