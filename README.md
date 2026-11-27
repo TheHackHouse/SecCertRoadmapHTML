@@ -1,6 +1,6 @@
 # Security Certification Roadmap
 
-An interactive map of **655 security certifications**, **317 training courses** and **82 retired
+An interactive map of **728 security certifications**, **318 training courses** and **89 retired
 certifications**, placed by security domain and by level from beginner to expert.
 
 - **Live:** [tools.hackhouse.com/roadmap](https://tools.hackhouse.com/roadmap/), in the Reference section of HackHouse Tools
@@ -184,8 +184,8 @@ same licence.
 - Made GSE, CISSP and SecurityX bars across the first seven domains and *Programming Language* a bar across the whole chart.
 
 **New charts**
-- Added a **Training** chart: 317 courses from providers including SpecterOps, MDSec, Zero-Point Security, Sektor7, MalDev Academy, Corelan, RET2, Zero2Automated, Signal Labs, OpenSecurityTraining2, Zero Day Engineering, Winsider, TrainSec, Synacktiv, Antisyphon, XINTRA, Mandiant Academy, Red Siege, Orange Cyberdefense / SensePost, Mossé, Red Team Alliance, Attify, Raelize, Penthertz, P1 Security, SANS courses without a GIAC exam, CISA / Idaho National Lab and SEI / CERT.
-- Added a **Retired** chart: 82 certifications recovered from this repository's history and from current audits, each with a retirement note.
+- Added a **Training** chart: 318 courses from providers including SpecterOps, MDSec, Zero-Point Security, Sektor7, MalDev Academy, Corelan, RET2, Zero2Automated, Signal Labs, OpenSecurityTraining2, Zero Day Engineering, Winsider, TrainSec, Synacktiv, Antisyphon, XINTRA, Mandiant Academy, Red Siege, Orange Cyberdefense / SensePost, Mossé, Red Team Alliance, Attify, Raelize, Penthertz, P1 Security, SANS courses without a GIAC exam, CISA / Idaho National Lab and SEI / CERT.
+- Added a **Retired** chart: 89 certifications recovered from this repository's history and from current audits, each with a retirement note.
 
 **Certifications**
 - Added Cloud and AI / Cyber areas with about 60 new certifications, including OSAI, HTB COAE, GOAA, GAIPS, AAISM, AIGP, SecAI+, CARTP, CARTE, Pwned Labs, CloudBreach, HackTricks and White Knight Labs cloud certifications.
@@ -195,6 +195,7 @@ same licence.
 - Applied renames, including CREST CCRTM/CCRTS, CRTM (formerly PACES), CRTL, HTB CWES, PMRP, CCDL2, SC-401, SC-500, MS-102, SecurityX, the Cisco CCNA/CCNP Cybersecurity and Automation tracks, and the VMware VCF certifications.
 - Corrected prices and links: GIAC (PR #190), OffSec, CREST, The SecOps Group, INE, SECO (now DNV), Zero-Point, Cyber Scheme, Mossé, TCM and Mile2, plus about 85 prices from the Jakobraun audit.
 - Merged pull requests #132, #157, #166, #170, #186 and #190, and data from the Jakobraun, hevertydourado, G1rdo, N1ckw1ck and JaimePolop forks.
+- Compared against [cyberdudekz/security-cert-roadmap](https://github.com/cyberdudekz/security-cert-roadmap) and checked each of its certifications on the vendor's site. Added 73 that were missing (vendor certifications from Splunk, CrowdStrike, CyberArk, Okta, HashiCorp, Ping, SailPoint, Saviynt, Zscaler, Netskope, Tenable, IBM QRadar, Palo Alto XSIAM, Broadcom, Veeam, Rubrik, plus AWS, Google Cloud, Microsoft, PECB, PMI-RMP, CRMA, CFE, CBCP, CCZT and PCI ISA) and 7 retired AWS, Microsoft and Linux Foundation certifications. About 60 of its entries were left out because they don't exist (for example "GIAC GNPT", "OSWE+" and "3GPP 5G Cybersecurity Expert") or are not exam-based certifications.
 - Fixed the GCIH and GCUX titles.
 
 **Legacy pages**

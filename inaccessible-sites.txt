@@ -93,3 +93,11 @@ offensivecon.org/trainings | 2027 trainings not yet posted | 2026 listings used
 --- Added during Corelan / Zero2Automated / RET2 research ---
 www.zero2auto.com | connection timed out; non-www zero2auto.com redirects to 0ffset.net and works | Zero2Automated catalog read from 0ffset.net and its Podia store
 rootedcon.com | loads, but no Corelan 2027 listing yet | RootedCON price for Corelan Heap not confirmed
+
+--- Added during the cyberdudekz/security-cert-roadmap comparison (Nov 2026) ---
+cellebrite.com | 403 | CCPA / CCME confirmed from search snippets; already on the chart
+sentinelone.com / university.sentinelone.com | 429 rate-limited | No public SentinelOne certification found; not added
+varonisu.varonis.com | behind customer login | Varonis Data Defense added without a price
+training.pingidentity.com | page failed to load | PingFederate / PingAM certifications confirmed from Credly and search snippets; no price
+pmi.org | 403 | PMI-RMP fee taken from PMI's handbook PDF via search
+cyberark.com certification pages | redirect to paloaltonetworks.com with no certification content | CyberArk entries taken from training.cyberark.com; no prices

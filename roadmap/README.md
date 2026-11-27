@@ -19,7 +19,7 @@ anywhere else (it needs nothing from the site).
    <a class="hh-tile" href="/roadmap/">
      <span class="hh-tile-tag">Certifications</span>
      <div class="hh-tile-name">Security Certification Roadmap</div>
-     <div class="hh-tile-desc">655 certifications and 317 training courses mapped by domain and level, with offensive, defensive and per-area views.</div>
+     <div class="hh-tile-desc">728 certifications and 318 training courses mapped by domain and level, with offensive, defensive and per-area views.</div>
    </a>
    ```
 
